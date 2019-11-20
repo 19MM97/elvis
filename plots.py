@@ -10,6 +10,7 @@ sns.set_context('talk', font_scale=1.4)
 def get_plots(path, kpis):
     """
     Create plots to compare the different control strategies based on their KPIs.
+
     :param path: Path where the plots shall be saved in.
     :type path: str
     :param kpis: Assumption keys.

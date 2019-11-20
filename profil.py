@@ -14,25 +14,20 @@ from storage import Storage
 from vehicle import Vehicle
 import numpy as np
 
-get_energy_price(1440)
+# get_energy_price(1440)
 
 
 class SimulationModel:
+    """Simulation instance.
 
-    def __init__(self,
-                 assumptions, number_of_lp, power_kw, dis_ev_arr, dis_year,
-                 control, storage_capacity=None, co2_scenario=None,
-                 dis_battery_size=None, dis_soc=None, dis_user_type=None,
-                 trafo_preload=None):
-        """Simulation instance.
        :param assumptions: Containing all simulation configurations.
        :type assumptions: dict
        :param number_of_lp: Amount of charging points the charging infrastructure has.
        :type number_of_lp: int
        :param power_kw: Power of each charging point in kW.
        :type power_kw: float
-       :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means maximum arrivals and
-       0 no arrivals.
+       :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means  \
+       arrivals and 0 no arrivals.
        :type dis_ev_arr: list
        :param dis_year: Total amount of car arrivals over simulation time.
        :param dis_year: int
@@ -46,12 +41,18 @@ class SimulationModel:
        :type dis_battery_size: list
        :param dis_soc: Distribution of the soc at the arrival time of the evs as specified in the input file.
        :type dis_soc: list
-       :param dis_user_type: Distribution of the user types specified in the input file. Each user type is having a
+       :param dis_user_type: Distribution of the user types specified in the input file. Each user type is having a \
        minimal and maximal parking time.
        :type dis_user_type: list
        :param trafo_preload: Preload of the transformer the charging infrastructure is connected to.
        :type trafo_preload: float
         """
+
+    def __init__(self,
+                 assumptions, number_of_lp, power_kw, dis_ev_arr, dis_year,
+                 control, storage_capacity=None, co2_scenario=None,
+                 dis_battery_size=None, dis_soc=None, dis_user_type=None,
+                 trafo_preload=None):
 
         self.number_of_lp = number_of_lp
         self.power_kw = power_kw
@@ -85,6 +86,7 @@ class SimulationModel:
     def profile_ev_load(self, fix_key):
         """
         Generate charging points, and arrivals. Assign power to each charging point based on control strategy.
+
         :param fix_key: 1 fixes the assumptions. 0 generates new assumptions every simulation.
         :type fix_key: int
         """

@@ -10,22 +10,22 @@ import numpy as np
 
 
 class Vehicle:
-    def __init__(self, t, dis_battery_size=None, dis_soc=None, dis_user_type=None, soc_target=None):
-        """
-                Represents all electric vehicles within the simulation.
+    """
+    Represents all electric vehicles within the simulation.
 
-                :param t: Current time step.
-                :type t: int
-                :param dis_battery_size: Distribution of the battery sizes specified in the input file.
-                :type dis_battery_size: list
-                :param dis_soc: Distribution of the soc at the arrival time of the evs as specified in the input file.
-                :type dis_soc: list
-                :param dis_user_type: Distribution of the user types specified in the input file.
-                Each user type is having a minimal and maximal parking time.
-                :type dis_user_type: list
-                :param soc_target: The SOC the electric vehicle wants to have when leaving.
-                :type soc_target: float
-                """
+    :param t: Current time step.
+    :type t: int
+    :param dis_battery_size: Distribution of the battery sizes specified in the input file.
+    :type dis_battery_size: list
+    :param dis_soc: Distribution of the soc at the arrival time of the evs as specified in the input file.
+    :type dis_soc: list
+    :param dis_user_type: Distribution of the user types specified in the input file. \
+    Each user type is having a minimal and maximal parking time.
+    :type dis_user_type: list
+    :param soc_target: The SOC the electric vehicle wants to have when leaving.
+    :type soc_target: float
+    """
+    def __init__(self, t, dis_battery_size=None, dis_soc=None, dis_user_type=None, soc_target=None):
         self.arrival_time = t
         self.car_id = 'ev' + str(self.arrival_time) + '_' + str(np.random.random_integers(0, 100000000, 1)[0])
         if dis_user_type is None:
@@ -109,8 +109,9 @@ class Vehicle:
 
     def update_xcharge(self, tau):
         """
-        Update the battery SOC according to the power withing the time step.
+        Update the battery SOC according to the power withing the time step. \
         Update the time period the battery can be Xcharged with the current power.
+
         :param tau: Length of one time step.
         :type tau: float
         """

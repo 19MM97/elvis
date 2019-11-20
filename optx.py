@@ -13,6 +13,7 @@ import pandas as pd
 
 def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, energy_price):
     """
+    Linear optimization model for the charging strategy.
 
     :param t: Current time step.
     :type t: int
@@ -22,7 +23,7 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
     :type charging_points: list
     :param assumptions: Containing all simulation configurations.
     :type assumptions: dict
-    :param co2_emission: CO2 emissions for the simulation period in kge/kWh.
+    :param co2_emission: CO2 emissions for the simulation period in kg CO2e/kWh.
     :type co2_emission: list
     :param energy_price: Containing the energy prices for the simulation period in €/MWh.
     :type energy_price: list
@@ -64,6 +65,7 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
     def power_bounds_rule(mod, i):
         """
         Define power limits for each car.
+
         :param mod: Pyomo optimization model.
         :param i: Model instance index.
         :type i: int
@@ -78,6 +80,7 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
     def trafo_limit_rule(mod, j):
         """
         Limit the total charging power to the maximal transformer load for each time step.
+
         :param mod: Pyomo optimization model.
         :param j: Model instance index.
         :param j: int
@@ -90,6 +93,7 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
     def demand_rule(mod, i):
         """
         Adjust vehicle energy demand based on either parking time and maximal charging power or SOC target.
+
         :param mod: Pyomo optimization model.
         :param i: Model instance index.
         :type i: int
@@ -110,6 +114,7 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
     def objective_rule(mod):
         """
         Target function to be minimized or maximized in order to optimize the charging plan.
+
         :param mod: Pyomo optimization model.
         :return: Target function.
         """

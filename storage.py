@@ -8,14 +8,14 @@ import numpy as np
 
 
 class Storage:
+    """"
+    Represents the batteries used in the charging infrastructure.
+
+    :param simulation_time: Current time step.
+    :param storage_capacity: Storage capacity in kWh.
+    """
     
     def __init__(self, simulation_time, storage_capacity):
-        """"
-        Represents the batteries used in the charging infrastructure.
-
-        :param simulation_time: Current time step.
-        :param storage_capacity: Storage capacity in kWh.
-        """
         self.location = np.random.choice(['Kaufland', 'Prakhaus', 'Street'])
         self.battery_id = 'storage' + str(self.location)
         self.mode = 0
@@ -76,8 +76,9 @@ class Storage:
 
     def update_xcharge(self, tau):
         """
-        Update the battery SOC according to the power withing the time step.
+        Update the battery SOC according to the power withing the time step. \
         Update the time period the battery can be Xcharged with the current power.
+
         :param tau: Length of one time step.
         :type tau: float
         """

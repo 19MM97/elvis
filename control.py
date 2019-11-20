@@ -9,6 +9,7 @@ Created on Wed Jan 23 17:25:16 2019
 def discrimination_free(t, trafo_preload, n_ev):
     """
     Define the charging power per charging point.
+
     :param t: Current time step.
     :type t: int
     :param trafo_preload: Time series data of the transformer preload for the simulation period.
@@ -25,6 +26,7 @@ def discrimination_free(t, trafo_preload, n_ev):
 def first_come_first_served(t, charging_load, trafo_preload):
     """
     Calculate the maximal charging power possible based on transformer preload and other charging powers.
+
     :param t: Current time step.
     :type t: int
     :param charging_load: Sum of the power of the other charging points that are already assigned.
@@ -41,6 +43,7 @@ def control_with_battery(t, power, trafo_preload, n_ev):
     """
     Calculate maximal power possible from the transformer and the sum of the power of all charging points with a
     connected vehicle.
+
     :param t: Current time step.
     :type t: int
     :param power: Power of each charging point in kW.

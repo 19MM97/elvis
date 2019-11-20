@@ -1,15 +1,17 @@
-import pandas as pd 
+import pandas as pd
 
-stations_config = pd.ExcelFile('inputdata.xlsx')
-sheet_names_list = stations_config.sheet_names
+if __name__ == '__main__':
+    stations_config = pd.ExcelFile('inputdata.xlsx')
+    sheet_names_list = stations_config.sheet_names
 
-for sheet in sheet_names_list:
-    exec('{} = pd.DataFrame(stations_config.parse(sheet_name=sheet) )'.format(sheet))
+    for sheet in sheet_names_list:
+        exec('{} = pd.DataFrame(stations_config.parse(sheet_name=sheet) )'.format(sheet))
 
 
 def input_2_profile_evl(dis_location):
     """
     Read the data specified in the input file.
+
     :param dis_location: Location of the charging infrastructure from input.
     :type dis_location: str
     :return: Distribution of battery sizes, SOC at arrival, user type, arrival times
@@ -24,6 +26,7 @@ def input_2_profile_evl(dis_location):
 def get_co2_emission(simulation_time):
     """
     Read the data specified in the input file.
+
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
     :return: CO2 time series data.
@@ -41,6 +44,7 @@ def get_co2_emission(simulation_time):
 def get_energy_price(simulation_time):
     """
     Read the data specified in the input file.
+
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
     :return: Energy price time series data.
@@ -58,6 +62,7 @@ def get_energy_price(simulation_time):
 def preload(simulation_time):
     """
     Read the data specified in the input file.
+
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
     :return: Transformer preload time series data.

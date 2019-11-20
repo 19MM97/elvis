@@ -10,6 +10,7 @@ import numpy as np
 def get_indicators(load_profile, total_load, control):
     """
     Calculate the indicators of the simulation.
+
     :param load_profile: Instance of the :class:`SimulationModel`
     :param total_load: Data frame containing time series data of charging points and the transformer.
     :param control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT') as per assumptions.

@@ -10,17 +10,18 @@ import numpy as np
 
 
 class Station:
+    """
+       Represents the charging points.
+
+       :param power_kw: Power the station charges the vehicle with.
+       :type power_kw: float
+       :param simulation_time: Total length of the simulation time.
+       :type simulation_time: int
+       :param control: Control type as per assumptions.
+       :type control: str
+       """
     
     def __init__(self, power_kw, simulation_time, control):
-        """
-        Represents the charging points.
-        :param power_kw: Power the station charges the vehicle with.
-        :type power_kw: float
-        :param simulation_time: Total length of the simulation time.
-        :type simulation_time: int
-        :param control: Control type as per assumptions.
-        :type control: str
-        """
         self.location = np.random.choice(['ST_', 'ST_', 'ST_'])
         self.station_id = self.location + str(np.random.randint(100, 1000))
         self.type_lp = 'AC'
@@ -41,6 +42,7 @@ class Station:
     def station_data(self, t=None):
         """
         Print out key values of the instance.
+
         :param t: Current time step.
         :type t: int
         """
@@ -54,6 +56,7 @@ class Station:
     def assign_ev(self, ev=None, t=None):
         """
         Dock vehicle to the station.
+
         :param ev: Instance of the :class:`vehicle`
         :param t: Current time step.
         :type t: int
@@ -86,6 +89,7 @@ class Station:
     def update_availability(self, t=None):
         """
         Disconnect the vehicle if the parking time is over.
+
         :param t: Current time step.
         :type t: int
         """

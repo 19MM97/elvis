@@ -17,7 +17,7 @@ def arr_interpol(dis_ev_arr, dis_year, simulation_time):
     """
     Create arrival times based on distributions and specified amount in the input files/ Assumptions.
 
-    :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means maximum arrivals and
+    :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means maximum arrivals and\
     0 no arrivals.
     :type dis_ev_arr: list
     :param dis_year: Total amount of car arrivals over simulation time.
@@ -53,7 +53,7 @@ def arr_interpol(dis_ev_arr, dis_year, simulation_time):
 def fix_arrivals(dis_ev_arr, dis_year, simulation_time, fix_key):
     """ Call :mod:`arr_interpol` if fix_key is 0 otherwise use saved arrival times.
 
-    :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means maximum arrivals and
+    :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means maximum arrivals and\
     0 no arrivals.
     :type dis_ev_arr: list
     :param dis_year: Total amount of car arrivals over simulation time.
@@ -82,11 +82,11 @@ def generate_ev(dis_ev_arr, dis_year, simulation_time, fix_key):
     """
     Generate arrival times and a queue for waiting electric vehicles.
 
-    :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means maximum arrivals and
+    :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means maximum arrivals and\
     0 no arrivals.
     :type dis_ev_arr: list
     :param dis_year: Total amount of car arrivals over simulation time.
-    :param dis_year: int
+    :type dis_year: int
     :param simulation_time: Total simulation time based on chosen time step.
     :type simulation_time: int
     :param fix_key: 1 fixes the assumptions. 0 generates new assumptions every simulation.
@@ -103,14 +103,14 @@ def generate_lp(n, power_kw, simulation_time, control):
     Generate charging points based on specified assumptions.
 
     :param n: Amount of charging points.
-    :rtype: int
+    :type n: int
     :param power_kw: Specified power of charging points (Assumptions).
-    :rtype: float
+    :type power_kw: float
     :param simulation_time: Total simulation time based on chosen time step.
     :type simulation_time: int
     :param control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT')
     :type control: str
-    :return: Charging points as instance of :class:`Station`.
+    :return: Charging points as instance of :class:`station`.
     :rtype: list
     """
     charging_points = []

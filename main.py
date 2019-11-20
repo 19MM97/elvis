@@ -34,7 +34,7 @@ def profile_ev_load(fix_key, assumptions, lp_amount, power, control, car_amount,
     :type storage_capacity: float
     :param co2_scenario: Position of the CO2_Scenario in the scenario list in assumptions.
     :type co2_scenario: int
-    :return: Returning the power curves, the indicators and the the instance of :class:`ProfileChargingDemand`
+    :return: Returning the power curves, the indicators and the the instance of :class:`profil` \
     of the simulation.
     :rtype: tuple
     """
