@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-if __name__ == '__main__':
+if __name__ == 'data':
     stations_config = pd.ExcelFile('inputdata.xlsx')
     sheet_names_list = stations_config.sheet_names
 
