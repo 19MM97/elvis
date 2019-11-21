@@ -15,15 +15,33 @@ class Vehicle:
 
     :param t: Current time step.
     :type t: int
-    :param dis_battery_size: Distribution of the battery sizes specified in the input file.
+    :param dis_battery_size: Distribution of the battery sizes according to the input file.
     :type dis_battery_size: list
-    :param dis_soc: Distribution of the soc at the arrival time of the evs as specified in the input file.
+    :param dis_soc: Distribution of the soc at the arrival time of the evs according to the input file.
     :type dis_soc: list
-    :param dis_user_type: Distribution of the user types specified in the input file. \
+    :param dis_user_type: Distribution of the user types according to the input file. \
     Each user type is having a minimal and maximal parking time.
     :type dis_user_type: list
-    :param soc_target: The SOC the electric vehicle wants to have when leaving.
+    :param soc_target: The SOC of the electric vehicle wants to have when leaving.
     :type soc_target: float
+
+    :cvar arrival_time: The arrival time of the vehicle.
+    :cvar car_id: Identifier of the car.
+    :cvar parking_time: Parking time in hours.
+    :cvar mode: Charging: 1 and discharging 0.
+    :cvar battery_size: Battery capacity in kWh.
+    :cvar time_start_xcharging: Time the charging/discharging begins.
+    :cvar soc_min: SOC minimum (0 to 1). Can't be discharged below.
+    :cvar power_min: Minimal power the car can charge or discharge.
+    :cvar power_max: Maximal power the car can charge or discharge.
+    :cvar eta_c: Charging efficiency (0 to 1).
+    :cvar eta_d: Discharging efficiency (0 to 1.
+    :cvar self_dis: Self-discharge of the battery in kW.
+    :cvar requested_xcapacity: The requested power of the car in kW.
+    :cvar xcharging_capacity: Combine these two to one.
+    :cvar charging_power:
+    :cvar soc: SOC of the vehicle.
+    :cvar soc_target: SOC target to be fullfilled while parking time if possible.
     """
     def __init__(self, t, dis_battery_size=None, dis_soc=None, dis_user_type=None, soc_target=None):
         self.arrival_time = t
@@ -110,7 +128,7 @@ class Vehicle:
     def update_xcharge(self, tau):
         """
         Update the battery SOC according to the power within the time step. \
-        Update the time period the battery can be Xcharged with the current power.
+        Update the time period the battery can be Xcharged at the current power.
 
         :param tau: Length of one time step.
         :type tau: float

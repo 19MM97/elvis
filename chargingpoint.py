@@ -1,0 +1,117 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jan 28 14:22:59 2019
+
+@author: draz
+"""
+
+
+import numpy as np
+
+
+class ChargingPoint:
+    """
+       Represents the charging points.
+
+       :param power_nominal: Power the station charges the vehicle with.
+       :type power_nominal: float
+       :param simulation_time: Total length of the simulation time.
+       :type simulation_time: int
+       :param control: Control type as per assumptions.
+       :type control: str
+
+       :cvar location: Location of the charging point/station. Needs to be adjusted when data can be provided.
+       :cvar station_id: Identifier for each charging point.
+       :cvar type_lp: DC or AC charging.
+       :cvar power_nominal: Nominal power of the charging point.
+       :cvar power_factor: Power factor (cos(phi)) of the grid.
+       :cvar power_min: Minimal power the charging point can charge with.
+       :cvar power_max: Maximal power the charging point can charge with.
+       :cvar charging_power: The charging or discharging power for a specific time step.
+       :cvar availability: Availability of the charging point (0 ev is connected, 1 no ev is connected).
+       :cvar connected_ev: ID of the connected ev.
+       :cvar time_start_xcharging: Time the charging/discharging starts.
+       :cvar load_profile: Time series data of the charging power.
+       :cvar control: Control type as per assumptions.
+       :cvar served_evs: Counter for every connected ev that charged/discharged.
+       :cvar occupancy: Time series data, 0 for charging point is available and 1 for charging point is used.
+       :cvar charging plan: Day ahead plan for the charging schedule.
+    """
+    
+    def __init__(self, power_nominal, simulation_time, control):
+        self.location = str('latitude, longitude')
+        self.station_id = self.location + str(np.random.randint(100, 1000))
+        self.type_lp = 'AC'
+        self.power_nominal = power_nominal
+        self.power_factor = 1.0
+        self.power_min = 0.0001
+        self.power_max = self.power_nominal
+        self.charging_power = 0.0
+        self.availability = 1
+        self.connected_ev = None
+        self.time_start_xcharging = None
+        self.load_profile = {'LP_%s' % self.station_id: [0] * simulation_time}
+        self.control = control if control is not None else 'UC'
+        self.served_evs = 0
+        self.occupancy = {'LP_%s' % self.station_id: [0] * simulation_time}
+        self.charging_plan = None
+
+    def station_data(self, t=None):
+        """
+        Print out key values of the instance.
+
+        :param t: Current time step.
+        :type t: int
+        """
+        print('station ID = ', self.station_id, ';',
+              'time = ', 'NA' if t is None else t,  ';',
+              'charging power = ', self.charging_power, ';',
+              'connectedEV = ', self.connected_ev, ';',
+              'max. Power = ', self.power_max, ';',
+              'availability = ', self.availability)
+            
+    def assign_ev(self, ev=None, t=None):
+        """
+        Dock vehicle to the station.
+
+        :param ev: Instance of the :class:`vehicle`
+        :param t: Current time step.
+        :type t: int
+        """
+        if ev is None:
+            self.availability = 1
+        else:
+            ev.time_start_xcharging = t
+            self.availability = 0
+            self.connected_ev = ev
+            self.time_start_xcharging = t
+            self.served_evs = self.served_evs + 1
+            
+    def check_power(self):
+        """
+        Check if the charging power is within its limits and assign accordingly.
+        """
+        if self.power_min <= self.charging_power <= self.power_max:
+            self.charging_power = self.charging_power
+        else:
+            if self.charging_power < self.power_min:
+                self.charging_power = self.power_min
+            else:
+                self.charging_power = self.power_max
+        if self.type_lp == 'AC':
+            self.charging_power = self.charging_power
+        elif self.type_lp == 'DC':
+            self.charging_power = self.charging_power * self.power_factor
+        
+    def update_availability(self, t=None):
+        """
+        Disconnect the vehicle if the parking time is over.
+
+        :param t: Current time step.
+        :type t: int
+        """
+        if t is not None and t - self.connected_ev.arrival_time >= self.connected_ev.parking_time * 60:
+            self.availability = 1
+            self.connected_ev = None
+            self.time_start_xcharging = None
+            self.power_nominal = self.power_max

@@ -18,44 +18,68 @@ import numpy as np
 
 
 class SimulationModel:
-    """Simulation instance.
+    """
+        Simulation instance.
 
-       :param assumptions: Containing all simulation configurations.
-       :type assumptions: dict
-       :param number_of_lp: Amount of charging points the charging infrastructure has.
-       :type number_of_lp: int
-       :param power_kw: Power of each charging point in kW.
-       :type power_kw: float
-       :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means  \
-       arrivals and 0 no arrivals.
-       :type dis_ev_arr: list
-       :param dis_year: Total amount of car arrivals over simulation time.
-       :param dis_year: int
-       :param control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT')
-       :type control: str
-       :param storage_capacity: Capacity of the storage (in kW).
-       :type storage_capacity: float
-       :param co2_scenario: Position of the CO2_Scenario in the scenario list in assumptions.
-       :type co2_scenario: int
-       :param dis_battery_size: Distribution of the battery sizes specified in the input file.
-       :type dis_battery_size: list
-       :param dis_soc: Distribution of the soc at the arrival time of the evs as specified in the input file.
-       :type dis_soc: list
-       :param dis_user_type: Distribution of the user types specified in the input file. Each user type is having a \
-       minimal and maximal parking time.
-       :type dis_user_type: list
-       :param trafo_preload: Preload of the transformer the charging infrastructure is connected to.
-       :type trafo_preload: float
-        """
+        :param assumptions: Simulation configurations.
+        :type assumptions: dict
+        :param number_of_lp: Amount of charging points in the charging infrastructure.
+        :type number_of_lp: int
+        :param power_kw: Power of each charging point in kW.
+        :type power_kw: float
+        :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means  \
+        arrivals and 0 no arrivals.
+        :type dis_ev_arr: list
+        :param dis_year: Total amount of car arrivals within simulation time.
+        :param dis_year: int
+        :param control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT') as per assumptions.
+        :type control: str
+        :param storage_capacity: Capacity of the storage (in kW).
+        :type storage_capacity: float
+        :param co2_scenario: Position of the CO2_Scenario in the scenario list in assumptions.
+        :type co2_scenario: int
+        :param dis_battery_size: Distribution of the battery sizes accorting to the input file.
+        :type dis_battery_size: list
+        :param dis_soc: Distribution of the SOCs at the arrival time of the vehicles according to the input file.
+        :type dis_soc: list
+        :param dis_user_type: Distribution of the user types specified in the input file. Each user type is having a \
+        minimal and maximal parking time.
+        :type dis_user_type: list
+        :param trafo_preload: Preload of the transformer the charging infrastructure is connected to.
+        :type trafo_preload: float
+
+        :cvar number_of_lp: Number of charging points for the simulation.
+        :cvar power_nominal: Nominal power of the charging points.
+        :cvar type_lp: AC or DC charging for the charging points.
+        :cvar control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT') as per assumptions.
+        :cvar dis_ev_arr: Distribution of the vehicle arrivals.
+        :cvar dis_year: Total amount of car arrivals over simulation time.
+        :cvar dis_battery_size: Distribution of the battery capacitites.
+        :cvar dis_soc: Distribtion of the SOC at arrival time.
+        :cvar dis_user_type: Distribution of the user types (parking time).
+        :cvar simulation_time: Total amount of time steps.
+        :cvar trafo_preload: Time series data of the transformer pre-load.
+        :cvar co2_emission: Time series data of the CO2 emissions.
+        :cvar energy_price: Time series data of the energy price.
+        :cvar assumptions: The assumptions specified in :class:`main`.
+        :cvar connected_evs: Time series data with the amount of connected vehicles for every time step.
+        :cvar arrivals: List of all times a car arrives.
+        :cvar tau: Length of a time step in minutes.
+        :cvar charging_points: List containing all chargin points as instances of :class:`chargingpoint`.
+        :cvar vehicles: Dictionary containing all connected ev IDs with their instance of :class:`vehicle`.
+        :cvar storage_capacity: Capacity of the battery of the station in kWh.
+        :cvar storage: Instance of :class:`storage`.
+        :cvar served_ev: Counter of all vehicles connected and charged.
+    """
 
     def __init__(self,
-                 assumptions, number_of_lp, power_kw, dis_ev_arr, dis_year,
+                 assumptions, number_of_lp, power_nominal, dis_ev_arr, dis_year,
                  control, storage_capacity=None, co2_scenario=None,
                  dis_battery_size=None, dis_soc=None, dis_user_type=None,
                  trafo_preload=None):
 
         self.number_of_lp = number_of_lp
-        self.power_kw = power_kw
+        self.power_nominal = power_nominal
         self.type_lp = 'AC'
         self.control = 'UC' if control is None else control
         self.dis_ev_arr = dis_ev_arr
@@ -90,7 +114,7 @@ class SimulationModel:
         :param fix_key: 1 fixes the assumptions. 0 generates new assumptions every simulation.
         :type fix_key: int
         """
-        self.charging_points = generate_lp(self.number_of_lp, self.power_kw, self.simulation_time, self.control)
+        self.charging_points = generate_lp(self.number_of_lp, self.power_nominal, self.simulation_time, self.control)
         arrivals, ev_queue = generate_ev(self.dis_ev_arr, self.dis_year, self.simulation_time, fix_key)
         self.arrivals = arrivals if self.arrivals is None else self.arrivals
 
@@ -124,7 +148,7 @@ class SimulationModel:
                                                  self.assumptions['opening_hours'][-1] -
                                                  self.assumptions['opening_hours'][0]) * 60:
                         self.charging_points[s].assign_ev(ev, t)
-                        self.charging_points[s].connected_ev.charging_power = self.charging_points[s].power_kw
+                        self.charging_points[s].connected_ev.charging_power = self.charging_points[s].power_nominal
                         self.served_ev += 1
                         self.vehicles.update({ev.car_id: ev})
                         if self.control == 'OPT':
@@ -137,11 +161,11 @@ class SimulationModel:
             # Assign power based on control strategy
             charging_power: float = 0.0
             if self.control == 'UC':
-                charging_power = self.power_kw
+                charging_power = self.power_nominal
             elif self.control == 'FD':
                 charging_power = discrimination_free(t, self.trafo_preload, self.connected_evs[t])
             elif self.control == 'WS':
-                available_from_trafo, xcharging_power = control_with_battery(t, self.power_kw, self.trafo_preload,
+                available_from_trafo, xcharging_power = control_with_battery(t, self.power_nominal, self.trafo_preload,
                                                                              self.connected_evs[t])
 
                 self.storage.xcharging_capacity = xcharging_power
@@ -177,7 +201,7 @@ class SimulationModel:
                     self.charging_points[s].connected_ev.check_power()
                     self.charging_points[s].connected_ev.update_xcharge(tau=self.tau)
                     self.charging_points[s].charging_power = self.charging_points[s].connected_ev.xcharging_capacity
-                    self.power_kw = self.charging_points[s].charging_power
+                    self.power_nominal = self.charging_points[s].charging_power
                     self.charging_points[s].load_profile['LP_%s' % self.charging_points[s].station_id][t] = \
                         self.charging_points[s].connected_ev.xcharging_capacity
                     self.charging_points[s].occupancy['LP_%s' % self.charging_points[s].station_id][t] = 1.0
@@ -186,6 +210,6 @@ class SimulationModel:
                     self.charging_points[s].update_availability(t)
 
                     if self.charging_points[s].availability == 1:
-                        self.power_kw = self.charging_points[s].power_max
+                        self.power_nominal = self.charging_points[s].power_max
                     else:
-                        self.power_kw = self.power_kw
+                        self.power_nominal = self.power_nominal

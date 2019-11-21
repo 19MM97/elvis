@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="vehicle module" href="vehicle.html" />
-    <link rel="prev" title="station module" href="station.html" /> 
+    <link rel="prev" title="profil module" href="profil.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,6 +83,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -91,7 +92,6 @@
 <li class="toctree-l2"><a class="reference internal" href="optx.html">optx module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plots.html">plots module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="profil.html">profil module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="station.html">station module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">storage module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vehicle.html">vehicle module</a></li>
 </ul>
@@ -179,6 +179,23 @@ Represents the batteries used in the charging infrastructure.</p>
 <li><p><strong>storage_capacity</strong> – Storage capacity in kWh.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Variables</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>location</strong> – Longitude and latitude of the storage. Needs to be adjusted when data is available.</p></li>
+<li><p><strong>battery_id</strong> – Identifier of the storage.</p></li>
+<li><p><strong>mode</strong> – 0 for discharging, 1 for charging.</p></li>
+<li><p><strong>soc_min</strong> – Minimal SOC of the battery, can’t be discharged beyond.</p></li>
+<li><p><strong>power_max</strong> – Maximum power for charging or discharging.</p></li>
+<li><p><strong>power_min</strong> – Minimal power for charging or discharging.</p></li>
+<li><p><strong>eta_c</strong> – Efficiency for charging.</p></li>
+<li><p><strong>eta_d</strong> – Efficiency for discharging.</p></li>
+<li><p><strong>self_dis</strong> – Self-discharge of the battery in kW.</p></li>
+<li><p><strong>xcharging_capacity</strong> – Rename to xcharging_power. Power the system is charging or     discharging with in each time step.</p></li>
+<li><p><strong>soc</strong> – State of charge of the battery (initialized with 0.5).</p></li>
+<li><p><strong>xcharging_time</strong> – The time left until the battery is fully charged or discharged based on current power.</p></li>
+<li><p><strong>load_profile</strong> – Time series data of the power.</p></li>
+</ul>
+</dd>
 </dl>
 <dl class="method">
 <dt id="storage.Storage.check_power">
@@ -207,7 +224,7 @@ Represents the batteries used in the charging infrastructure.</p>
 <dl class="method">
 <dt id="storage.Storage.update_xcharge">
 <code class="sig-name descname">update_xcharge</code><span class="sig-paren">(</span><em class="sig-param">tau</em><span class="sig-paren">)</span><a class="headerlink" href="#storage.Storage.update_xcharge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the battery SOC according to the power withing the time step.         Update the time period the battery can be Xcharged with the current power.</p>
+<dd><p>Update the battery SOC according to the power within the time step.         Update the time period the battery can be Xcharged at the current power.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>tau</strong> (<em>float</em>) – Length of one time step.</p>
@@ -236,7 +253,7 @@ Represents the batteries used in the charging infrastructure.</p>
         <a href="vehicle.html" class="btn btn-neutral float-right" title="vehicle module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="station.html" class="btn btn-neutral float-left" title="station module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="profil.html" class="btn btn-neutral float-left" title="profil module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

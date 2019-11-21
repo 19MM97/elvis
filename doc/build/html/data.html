@@ -83,6 +83,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -91,7 +92,6 @@
 <li class="toctree-l2"><a class="reference internal" href="optx.html">optx module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plots.html">plots module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="profil.html">profil module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="station.html">station module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vehicle.html">vehicle module</a></li>
 </ul>
@@ -167,7 +167,7 @@
 <dl class="function">
 <dt id="data.get_co2_emission">
 <code class="sig-prename descclassname">data.</code><code class="sig-name descname">get_co2_emission</code><span class="sig-paren">(</span><em class="sig-param">simulation_time</em><span class="sig-paren">)</span><a class="headerlink" href="#data.get_co2_emission" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the data specified in the input file.</p>
+<dd><p>Read the data concerning CO2 emissions from input file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>simulation_time</strong> (<em>int</em>) – Total length of the simulation time.</p>
@@ -181,7 +181,7 @@
 <dl class="function">
 <dt id="data.get_energy_price">
 <code class="sig-prename descclassname">data.</code><code class="sig-name descname">get_energy_price</code><span class="sig-paren">(</span><em class="sig-param">simulation_time</em><span class="sig-paren">)</span><a class="headerlink" href="#data.get_energy_price" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the data specified in the input file.</p>
+<dd><p>Read the data concerning energy prices from input file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>simulation_time</strong> (<em>int</em>) – Total length of the simulation time.</p>
@@ -195,10 +195,10 @@
 <dl class="function">
 <dt id="data.input_2_profile_evl">
 <code class="sig-prename descclassname">data.</code><code class="sig-name descname">input_2_profile_evl</code><span class="sig-paren">(</span><em class="sig-param">dis_location</em><span class="sig-paren">)</span><a class="headerlink" href="#data.input_2_profile_evl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the data specified in the input file.</p>
+<dd><p>Read the data concerning battery sizes, SOCs, user types, arrival times from input file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dis_location</strong> (<em>str</em>) – Location of the charging infrastructure from input.</p>
+<dd class="field-odd"><p><strong>dis_location</strong> (<em>str</em>) – Location of the charging infrastructure (according to input file).</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Distribution of battery sizes, SOC at arrival, user type, arrival times</p>
@@ -209,7 +209,7 @@
 <dl class="function">
 <dt id="data.preload">
 <code class="sig-prename descclassname">data.</code><code class="sig-name descname">preload</code><span class="sig-paren">(</span><em class="sig-param">simulation_time</em><span class="sig-paren">)</span><a class="headerlink" href="#data.preload" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the data specified in the input file.</p>
+<dd><p>Read the data concerning transformer pre-load from input file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>simulation_time</strong> (<em>int</em>) – Total length of the simulation time.</p>

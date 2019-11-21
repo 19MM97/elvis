@@ -10,7 +10,7 @@ import numpy as np
 import pickle
 import math 
 import queue
-from station import Station  
+from chargingpoint import ChargingPoint
 import time 
 
 def Arrinterpol(disDay, disYear, simulationTime):
@@ -58,7 +58,7 @@ def GenerateEV(control, disDay,disYear,simulationTime, fix_key):
 def GenerateLP(N,power_kw,simulationTime, control):
     chargingPoints=[]
     for s in range(N):
-         chargingPoints.append(Station(power_kw=power_kw, simulation_time=simulationTime, control=control))
+         chargingPoints.append(ChargingPoint(power_nominal=power_kw, simulation_time=simulationTime, control=control))
     return chargingPoints 
 
 

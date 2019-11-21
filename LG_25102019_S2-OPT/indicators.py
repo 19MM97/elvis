@@ -15,7 +15,7 @@ def Get_indiciators(loadProfile, totalLoad, control):
 #        round((totalLoad['LP_total_load_kW'].sum() + abs(sum([n for n in totalLoad['sotrage_LP'].tolist() if n <0])))/60000,2),
         'F1_Fzg.- Auslastung (%)_'+ control: round(loadProfile.servedEV/len(loadProfile.arrivales) * 100.0, 2),
         'F2_Energ. Auslastung(%)_'+ control: round(round(np.trapz(totalLoad['LP_total_load_kW']), 3)/round(loadProfile.power_kw/loadProfile.numberOfLp, 3)/round(loadProfile.simulationTime,3)*100.0, 2),
-#        'F2_Energ. Auslastung(%)':round(np.trapz(totalLoad['LP_total_load_kW'])/loadProfile.power_kw/loadProfile.numberOfLp/loadProfile.simulationTime/len(np.where(loadProfile.disDay['Autos_No']!=0)[0])*len(loadProfile.disDay['Autos_No'])*100,2),
+#        'F2_Energ. Auslastung(%)':round(np.trapz(totalLoad['LP_total_load_kW'])/loadProfile.power_nominal/loadProfile.numberOfLp/loadProfile.simulationTime/len(np.where(loadProfile.disDay['Autos_No']!=0)[0])*len(loadProfile.disDay['Autos_No'])*100,2),
         'F3_Zeitl. Auslastung (%)_'+ control: round(round(totalLoad['LP_occupancy'].sum(),3)/round(loadProfile.numberOfLp,3)/round(loadProfile.simulationTime,3) * 100.0, 2),
         'Max. Gleichzeitigkeitsfaktor_'+ control: round(round(totalLoad['LP_total_load_kW'].max(), 3)/round(loadProfile.numberOfLp/loadProfile.power_kw, 3), 2),
         'Trafo Spitzenlast (%)_'+control:round(round(totalLoad['trafoLoading_kW'].max(), 3) /630.0 *100.0,2),

@@ -83,6 +83,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -91,7 +92,6 @@
 <li class="toctree-l2"><a class="reference internal" href="optx.html">optx module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plots.html">plots module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="profil.html">profil module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="station.html">station module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vehicle.html">vehicle module</a></li>
 </ul>
@@ -182,10 +182,10 @@
 <li><p><strong>fix_key</strong> (<em>int</em>) – 1 fixes the assumptions. 0 generates new assumptions every simulation.</p></li>
 <li><p><strong>assumptions</strong> (<em>dict</em>) – Containing all simulation configurations.</p></li>
 <li><p><strong>lp_amount</strong> (<em>int</em>) – Amount of charging points the charging infrastructure has.</p></li>
-<li><p><strong>power</strong> (<em>float</em>) – Power each charging point has in kW.</p></li>
+<li><p><strong>power</strong> (<em>float</em>) – Power of each charging point in kW.</p></li>
 <li><p><strong>control</strong> (<em>str</em>) – Control Strategy (‘UC’, ‘FD’, ‘FCFS’, ‘WS’, ‘OPT’)</p></li>
 <li><p><strong>car_amount</strong> (<em>int</em>) – Amount of car arrivals per week.</p></li>
-<li><p><strong>storage_capacity</strong> (<em>float</em>) – Capacity of the storage (in kW).</p></li>
+<li><p><strong>storage_capacity</strong> (<em>float</em>) – Storage capacity (in kW).</p></li>
 <li><p><strong>co2_scenario</strong> (<em>int</em>) – Position of the CO2_Scenario in the scenario list in assumptions.</p></li>
 </ul>
 </dd>

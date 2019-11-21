@@ -24,13 +24,13 @@ def profile_ev_load(fix_key, assumptions, lp_amount, power, control, car_amount,
     :type assumptions: dict
     :param lp_amount: Amount of charging points the charging infrastructure has.
     :type lp_amount: int
-    :param power: Power each charging point has in kW.
+    :param power: Power of each charging point in kW.
     :type power: float
     :param control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT')
     :type control: str
     :param car_amount: Amount of car arrivals per week.
     :type car_amount: int
-    :param storage_capacity: Capacity of the storage (in kW).
+    :param storage_capacity: Storage capacity (in kW).
     :type storage_capacity: float
     :param co2_scenario: Position of the CO2_Scenario in the scenario list in assumptions.
     :type co2_scenario: int

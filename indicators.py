@@ -11,11 +11,12 @@ def get_indicators(load_profile, total_load, control):
     """
     Calculate the indicators of the simulation.
 
-    :param load_profile: Instance of the :class:`SimulationModel`
+    :param load_profile: Instance of the :class:`profil.SimulationModel`
     :param total_load: Data frame containing time series data of charging points and the transformer.
     :param control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT') as per assumptions.
     :type control: str
-    :return:
+    :return: Calculated indicators.
+    :rtype: dict
     """
 
     hours_station_opened = ((load_profile.assumptions['opening_hours'][-1] -
@@ -30,12 +31,12 @@ def get_indicators(load_profile, total_load, control):
     total_energy_loaded = total_load['lp_total_load_kW'].sum() / 1000.0 / 60.0
 
     load_factor_cars = load_profile.served_ev / len(load_profile.arrivals) * 100.0
-    load_factor_energy = (total_energy_loaded * 1000 / load_profile.power_kw /
+    load_factor_energy = (total_energy_loaded * 1000 / load_profile.power_nominal /
                           load_profile.number_of_lp / hours_station_opened * 100.0)
     load_factor_time = (total_load['lp_occupancy'].sum() / load_profile.number_of_lp /
                         hours_station_opened / 60.0 * 100.0)
 
-    diversity_factor = total_load['lp_total_load_kW'].max() / load_profile.number_of_lp / load_profile.power_kw
+    diversity_factor = total_load['lp_total_load_kW'].max() / load_profile.number_of_lp / load_profile.power_nominal
 
     trafo_peak_load = total_load['trafo_loading_kW'].max() / load_profile.trafo_preload[-1][0] * 100.0
 

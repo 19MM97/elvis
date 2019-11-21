@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="data module" href="data.html" />
-    <link rel="prev" title="DAI copy_trysphinx" href="modules.html" /> 
+    <link rel="prev" title="chargingpoint module" href="chargingpoint.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,6 +83,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">control module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -91,7 +92,6 @@
 <li class="toctree-l2"><a class="reference internal" href="optx.html">optx module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plots.html">plots module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="profil.html">profil module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="station.html">station module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vehicle.html">vehicle module</a></li>
 </ul>
@@ -176,12 +176,12 @@ connected vehicle.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>int</em>) – Current time step.</p></li>
 <li><p><strong>power</strong> (<em>float</em>) – Power of each charging point in kW.</p></li>
-<li><p><strong>trafo_preload</strong> (<em>list</em>) – Time series data of the transformer preload and maximal load for the simulation period.</p></li>
+<li><p><strong>trafo_preload</strong> (<em>list</em>) – Time series data of the transformer preload and maximal load.</p></li>
 <li><p><strong>n_ev</strong> (<em>int</em>) – Amount of connected vehicles.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Maximal power possible from transformer, Sum of the power of all charging points with a connected vehicle.</p>
+<dd class="field-even"><p>Maximal power possible from the transformer.              Sum of the powers of all charging points with connected vehicle.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -194,12 +194,12 @@ connected vehicle.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>int</em>) – Current time step.</p></li>
-<li><p><strong>trafo_preload</strong> (<em>list</em>) – Time series data of the transformer preload for the simulation period.</p></li>
+<li><p><strong>trafo_preload</strong> (<em>list</em>) – Time series data of the transformer preload.</p></li>
 <li><p><strong>n_ev</strong> (<em>int</em>) – Amount of connected vehicles.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Power that each charging point can load with.</p>
+<dd class="field-even"><p>Power with which each charging point can charge.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -207,13 +207,13 @@ connected vehicle.</p>
 <dl class="function">
 <dt id="control.first_come_first_served">
 <code class="sig-prename descclassname">control.</code><code class="sig-name descname">first_come_first_served</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">charging_load</em>, <em class="sig-param">trafo_preload</em><span class="sig-paren">)</span><a class="headerlink" href="#control.first_come_first_served" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the maximal charging power possible based on transformer preload and other charging powers.</p>
+<dd><p>Calculate the maximal charging power depending on the transformer pre-load     and the power of the other charging points.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>int</em>) – Current time step.</p></li>
-<li><p><strong>charging_load</strong> (<em>float</em>) – Sum of the power of the other charging points that are already assigned.</p></li>
-<li><p><strong>trafo_preload</strong> (<em>list</em>) – Time series data of the transformer preload and maximal load for the simulation period.</p></li>
+<li><p><strong>charging_load</strong> (<em>float</em>) – Sum of the powers of the other charging points that are already assigned.</p></li>
+<li><p><strong>trafo_preload</strong> (<em>list</em>) – Time series data of the transformer preload and maximal load.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -235,7 +235,7 @@ connected vehicle.</p>
         <a href="data.html" class="btn btn-neutral float-right" title="data module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="modules.html" class="btn btn-neutral float-left" title="DAI copy_trysphinx" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="chargingpoint.html" class="btn btn-neutral float-left" title="chargingpoint module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

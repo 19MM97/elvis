@@ -1,7 +1,0 @@
-wista\_data module
-==================
-
-.. automodule:: wista_data
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -4,6 +4,7 @@ DAI copy_trysphinx
 .. toctree::
    :maxdepth: 4
 
+   chargingpoint
    control
    data
    events
@@ -12,6 +13,5 @@ DAI copy_trysphinx
    optx
    plots
    profil
-   station
    storage
    vehicle

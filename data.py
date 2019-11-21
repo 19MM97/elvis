@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 if __name__ == '__main__':
     stations_config = pd.ExcelFile('inputdata.xlsx')
     sheet_names_list = stations_config.sheet_names
@@ -10,9 +11,9 @@ if __name__ == '__main__':
 
 def input_2_profile_evl(dis_location):
     """
-    Read the data specified in the input file.
+    Read the data concerning battery sizes, SOCs, user types, arrival times from input file.
 
-    :param dis_location: Location of the charging infrastructure from input.
+    :param dis_location: Location of the charging infrastructure (according to input file).
     :type dis_location: str
     :return: Distribution of battery sizes, SOC at arrival, user type, arrival times
     """
@@ -25,7 +26,7 @@ def input_2_profile_evl(dis_location):
 
 def get_co2_emission(simulation_time):
     """
-    Read the data specified in the input file.
+    Read the data concerning CO2 emissions from input file.
 
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
@@ -43,7 +44,7 @@ def get_co2_emission(simulation_time):
 
 def get_energy_price(simulation_time):
     """
-    Read the data specified in the input file.
+    Read the data concerning energy prices from input file.
 
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
@@ -61,7 +62,7 @@ def get_energy_price(simulation_time):
 
 def preload(simulation_time):
     """
-    Read the data specified in the input file.
+    Read the data concerning transformer pre-load from input file.
 
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int

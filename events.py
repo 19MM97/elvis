@@ -10,15 +10,15 @@ import math
 import numpy as np
 import pickle
 import queue
-from station import Station
+from chargingpoint import ChargingPoint
 
 
 def arr_interpol(dis_ev_arr, dis_year, simulation_time):
     """
-    Create arrival times based on distributions and specified amount in the input files/ Assumptions.
+    Generate arrival times based on data from the input file/ Assumptions.
 
-    :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means maximum arrivals and\
-    0 no arrivals.
+    :param dis_ev_arr: Hourly arrival distribution for one week. \
+    Values from 0 to 1, where 1 means maximum number of arrivals and 0 no arrivals.
     :type dis_ev_arr: list
     :param dis_year: Total amount of car arrivals over simulation time.
     :param dis_year: int
@@ -51,12 +51,12 @@ def arr_interpol(dis_ev_arr, dis_year, simulation_time):
 
 
 def fix_arrivals(dis_ev_arr, dis_year, simulation_time, fix_key):
-    """ Call :mod:`arr_interpol` if fix_key is 0 otherwise use saved arrival times.
+    """ Call :mod:`events.arr_interpol` if fix_key is 0 otherwise use saved arrival times.
 
     :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means maximum arrivals and\
     0 no arrivals.
     :type dis_ev_arr: list
-    :param dis_year: Total amount of car arrivals over simulation time.
+    :param dis_year: Total amount of car arrivals within simulation time.
     :param dis_year: int
     :param simulation_time: Total simulation time based on chosen time step.
     :type simulation_time: int
@@ -100,7 +100,7 @@ def generate_ev(dis_ev_arr, dis_year, simulation_time, fix_key):
 
 def generate_lp(n, power_kw, simulation_time, control):
     """
-    Generate charging points based on specified assumptions.
+    Generate charging points based on assumptions.
 
     :param n: Amount of charging points.
     :type n: int
@@ -115,6 +115,6 @@ def generate_lp(n, power_kw, simulation_time, control):
     """
     charging_points = []
     for s in range(n):
-        charging_points.append(Station(power_kw=power_kw, simulation_time=simulation_time, control=control))
+        charging_points.append(ChargingPoint(power_nominal=power_kw, simulation_time=simulation_time, control=control))
 
     return charging_points

@@ -10,7 +10,7 @@ import numpy as np
 import pickle
 import math 
 import queue
-from station import Station
+from chargingpoint import ChargingPoint
 
 
 def arr_interpol(dis_day, dis_year, simulation_time):
@@ -64,6 +64,6 @@ def generate_lp(n, power_kw, simulation_time, control):
     charging_points = []
 
     for s in range(n):
-        charging_points.append(Station(power_kw=power_kw, simulation_time=simulation_time, control=control))
+        charging_points.append(ChargingPoint(power_nominal=power_kw, simulation_time=simulation_time, control=control))
 
     return charging_points

@@ -83,6 +83,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -91,7 +92,6 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">optx module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="plots.html">plots module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="profil.html">profil module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="station.html">station module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vehicle.html">vehicle module</a></li>
 </ul>
@@ -166,23 +166,89 @@
 <span id="optx-module"></span><h1>optx module<a class="headerlink" href="#module-optx" title="Permalink to this headline">¶</a></h1>
 <p>Created on Fri Oct  18 13:17:14 2019</p>
 <p>&#64;author: draz</p>
+<dl class="method">
+<dt id="optx.power_bounds_rule">
+<code class="sig-prename descclassname">optx.</code><code class="sig-name descname">power_bounds_rule</code><span class="sig-paren">(</span><em class="sig-param">mod</em>, <em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#optx.power_bounds_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define power limits for each car.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mod</strong> – Pyomo optimization model.</p></li>
+<li><p><strong>i</strong> (<em>int</em>) – Model instance index.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Upper and lower power limits for the charging power.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="optx.trafo_limit_rule">
+<code class="sig-prename descclassname">optx.</code><code class="sig-name descname">trafo_limit_rule</code><span class="sig-paren">(</span><em class="sig-param">mod</em>, <em class="sig-param">j</em><span class="sig-paren">)</span><a class="headerlink" href="#optx.trafo_limit_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Limit the total charging power to the maximal transformer load for each time step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mod</strong> – Pyomo optimization model.</p></li>
+<li><p><strong>j</strong> – Model instance index.</p></li>
+<li><p><strong>j</strong> – int</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Maximal charging power.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="optx.demand_rule">
+<code class="sig-prename descclassname">optx.</code><code class="sig-name descname">demand_rule</code><span class="sig-paren">(</span><em class="sig-param">mod</em>, <em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#optx.demand_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust vehicle energy demand based on either parking time and maximal charging power or SOC target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mod</strong> – Pyomo optimization model.</p></li>
+<li><p><strong>i</strong> (<em>int</em>) – Model instance index.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Energy demand.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="optx.objective_rule">
+<code class="sig-prename descclassname">optx.</code><code class="sig-name descname">objective_rule</code><span class="sig-paren">(</span><em class="sig-param">mod</em><span class="sig-paren">)</span><a class="headerlink" href="#optx.objective_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Target function to be minimized or maximized in order to optimize the charging plan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mod</strong> – Pyomo optimization model.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Target function.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="function">
 <dt id="optx.opt_charging">
 <code class="sig-prename descclassname">optx.</code><code class="sig-name descname">opt_charging</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">trafo_preload</em>, <em class="sig-param">charging_points</em>, <em class="sig-param">assumptions</em>, <em class="sig-param">co2_emission</em>, <em class="sig-param">energy_price</em><span class="sig-paren">)</span><a class="headerlink" href="#optx.opt_charging" title="Permalink to this definition">¶</a></dt>
-<dd><p>Linear optimization model for the charging strategy.</p>
+<dd><p>Linear optimization model for the charging strategy (if control=’OPT’).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>int</em>) – Current time step.</p></li>
 <li><p><strong>trafo_preload</strong> (<em>list</em>) – Transformer preload.</p></li>
-<li><p><strong>charging_points</strong> (<em>list</em>) – List of instances from <a class="reference internal" href="station.html#module-station" title="station"><code class="xref py py-class docutils literal notranslate"><span class="pre">station</span></code></a>.</p></li>
-<li><p><strong>assumptions</strong> (<em>dict</em>) – Containing all simulation configurations.</p></li>
+<li><p><strong>charging_points</strong> (<em>list</em>) – Instances from <a class="reference internal" href="chargingpoint.html#module-chargingpoint" title="chargingpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">chargingpoint</span></code></a>.</p></li>
+<li><p><strong>assumptions</strong> (<em>dict</em>) – Simulation configurations.</p></li>
 <li><p><strong>co2_emission</strong> (<em>list</em>) – CO2 emissions for the simulation period in kg CO2e/kWh.</p></li>
-<li><p><strong>energy_price</strong> (<em>list</em>) – Containing the energy prices for the simulation period in €/MWh.</p></li>
+<li><p><strong>energy_price</strong> (<em>list</em>) – Energy prices for the simulation period in €/MWh.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Return charging points (<a class="reference internal" href="station.html#module-station" title="station"><code class="xref py py-class docutils literal notranslate"><span class="pre">station</span></code></a>) with an updated day ahead charging plan.</p>
+<dd class="field-even"><p>Return charging points (<a class="reference internal" href="chargingpoint.html#module-chargingpoint" title="chargingpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">chargingpoint</span></code></a>) with an updated day ahead charging plan.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>list</p>

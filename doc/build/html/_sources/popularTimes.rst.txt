@@ -1,7 +1,0 @@
-popularTimes module
-===================
-
-.. automodule:: popularTimes
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -13,10 +13,25 @@ class Storage:
 
     :param simulation_time: Current time step.
     :param storage_capacity: Storage capacity in kWh.
+
+    :cvar location: Longitude and latitude of the storage. Needs to be adjusted when data is available.
+    :cvar battery_id: Identifier of the storage.
+    :cvar mode: 0 for discharging, 1 for charging.
+    :cvar soc_min: Minimal SOC of the battery, can't be discharged beyond.
+    :cvar power_max: Maximum power for charging or discharging.
+    :cvar power_min: Minimal power for charging or discharging.
+    :cvar eta_c: Efficiency for charging.
+    :cvar eta_d: Efficiency for discharging.
+    :cvar self_dis: Self-discharge of the battery in kW.
+    :cvar xcharging_capacity: Rename to xcharging_power. Power the system is charging or \
+    discharging with in each time step.
+    :cvar soc: State of charge of the battery (initialized with 0.5).
+    :cvar xcharging_time: The time left until the battery is fully charged or discharged based on current power.
+    :cvar load_profile: Time series data of the power.
     """
     
     def __init__(self, simulation_time, storage_capacity):
-        self.location = np.random.choice(['Kaufland', 'Prakhaus', 'Street'])
+        self.location = 'longitude, latitude'
         self.battery_id = 'storage' + str(self.location)
         self.mode = 0
         self.battery_size = storage_capacity if storage_capacity is not None else 0.0
@@ -76,8 +91,8 @@ class Storage:
 
     def update_xcharge(self, tau):
         """
-        Update the battery SOC according to the power withing the time step. \
-        Update the time period the battery can be Xcharged with the current power.
+        Update the battery SOC according to the power within the time step. \
+        Update the time period the battery can be Xcharged at the current power.
 
         :param tau: Length of one time step.
         :type tau: float

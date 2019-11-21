@@ -13,21 +13,21 @@ import pandas as pd
 
 def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, energy_price):
     """
-    Linear optimization model for the charging strategy.
+    Linear optimization model for the charging strategy (if control='OPT').
 
     :param t: Current time step.
     :type t: int
     :param trafo_preload: Transformer preload.
     :type trafo_preload: list
-    :param charging_points: List of instances from :class:`station`.
+    :param charging_points: Instances from :class:`chargingpoint`.
     :type charging_points: list
-    :param assumptions: Containing all simulation configurations.
+    :param assumptions: Simulation configurations.
     :type assumptions: dict
     :param co2_emission: CO2 emissions for the simulation period in kg CO2e/kWh.
     :type co2_emission: list
-    :param energy_price: Containing the energy prices for the simulation period in €/MWh.
+    :param energy_price: Energy prices for the simulation period in €/MWh.
     :type energy_price: list
-    :return: Return charging points (:class:`station`) with an updated day ahead charging plan.
+    :return: Return charging points (:class:`chargingpoint`) with an updated day ahead charging plan.
     :rtype: list
     """
     tau = 1  # time resolution in minutes 
