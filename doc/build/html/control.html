@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>control module &mdash; Elvis [1.0] documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="data module" href="data.html" />
+    <link rel="prev" title="DAI copy_trysphinx" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Elvis
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">control module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="indicators.html">indicators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optx.html">optx module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plots.html">plots module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="profil.html">profil module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="station.html">station module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="storage.html">storage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vehicle.html">vehicle module</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Elvis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">DAI copy_trysphinx</a> &raquo;</li>
+        
+      <li>control module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/control.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-control">
+<span id="control-module"></span><h1>control module<a class="headerlink" href="#module-control" title="Permalink to this headline">¶</a></h1>
+<p>Created on Wed Jan 23 17:25:16 2019</p>
+<p>&#64;author: draz</p>
+<dl class="function">
+<dt id="control.control_with_battery">
+<code class="sig-prename descclassname">control.</code><code class="sig-name descname">control_with_battery</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">power</em>, <em class="sig-param">trafo_preload</em>, <em class="sig-param">n_ev</em><span class="sig-paren">)</span><a class="headerlink" href="#control.control_with_battery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate maximal power possible from the transformer and the sum of the power of all charging points with a
+connected vehicle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – Current time step.</p></li>
+<li><p><strong>power</strong> (<em>float</em>) – Power of each charging point in kW.</p></li>
+<li><p><strong>trafo_preload</strong> (<em>list</em>) – Time series data of the transformer preload and maximal load for the simulation period.</p></li>
+<li><p><strong>n_ev</strong> (<em>int</em>) – Amount of connected vehicles.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Maximal power possible from transformer, Sum of the power of all charging points with a connected vehicle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.discrimination_free">
+<code class="sig-prename descclassname">control.</code><code class="sig-name descname">discrimination_free</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">trafo_preload</em>, <em class="sig-param">n_ev</em><span class="sig-paren">)</span><a class="headerlink" href="#control.discrimination_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the charging power per charging point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – Current time step.</p></li>
+<li><p><strong>trafo_preload</strong> (<em>list</em>) – Time series data of the transformer preload for the simulation period.</p></li>
+<li><p><strong>n_ev</strong> (<em>int</em>) – Amount of connected vehicles.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Power that each charging point can load with.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.first_come_first_served">
+<code class="sig-prename descclassname">control.</code><code class="sig-name descname">first_come_first_served</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">charging_load</em>, <em class="sig-param">trafo_preload</em><span class="sig-paren">)</span><a class="headerlink" href="#control.first_come_first_served" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the maximal charging power possible based on transformer preload and other charging powers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>int</em>) – Current time step.</p></li>
+<li><p><strong>charging_load</strong> (<em>float</em>) – Sum of the power of the other charging points that are already assigned.</p></li>
+<li><p><strong>trafo_preload</strong> (<em>list</em>) – Time series data of the transformer preload and maximal load for the simulation period.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Maximal possible charging power.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="data.html" class="btn btn-neutral float-right" title="data module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral float-left" title="DAI copy_trysphinx" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, moritz
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

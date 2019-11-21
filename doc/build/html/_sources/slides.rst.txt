@@ -1,0 +1,7 @@
+slides module
+=============
+
+.. automodule:: slides
+   :members:
+   :undoc-members:
+   :show-inheritance:

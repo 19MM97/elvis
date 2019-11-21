@@ -109,7 +109,7 @@ class Vehicle:
 
     def update_xcharge(self, tau):
         """
-        Update the battery SOC according to the power withing the time step. \
+        Update the battery SOC according to the power within the time step. \
         Update the time period the battery can be Xcharged with the current power.
 
         :param tau: Length of one time step.
