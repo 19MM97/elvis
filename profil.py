@@ -168,17 +168,17 @@ class SimulationModel:
                 available_from_trafo, xcharging_power = control_with_battery(t, self.power_nominal, self.trafo_preload,
                                                                              self.connected_evs[t])
 
-                self.storage.xcharging_capacity = xcharging_power
+                self.storage.xcharging_power = xcharging_power
                 self.storage.update_mode()
                 self.storage.check_power()
                 self.storage.update_xcharge(self.tau)
 
                 if self.connected_evs[t] > 0:
-                    charging_power = (available_from_trafo - self.storage.xcharging_capacity) / self.connected_evs[t]
+                    charging_power = (available_from_trafo - self.storage.xcharging_power) / self.connected_evs[t]
                 else:
                     charging_power = 0.0
 
-                self.storage.load_profile['LP_%s' % self.storage.battery_id][t] = self.storage.xcharging_capacity
+                self.storage.load_profile['LP_%s' % self.storage.battery_id][t] = self.storage.xcharging_power
                 self.storage.load_profile['SOC_%s' % self.storage.battery_id][t] = self.storage.soc
 
             for s in range(len(self.charging_points)):
@@ -197,13 +197,13 @@ class SimulationModel:
                         self.charging_points[s].charging_power = charging_power
 
                     self.charging_points[s].check_power()
-                    self.charging_points[s].connected_ev.xcharging_capacity = self.charging_points[s].charging_power
+                    self.charging_points[s].connected_ev.xcharging_power = self.charging_points[s].charging_power
                     self.charging_points[s].connected_ev.check_power()
                     self.charging_points[s].connected_ev.update_xcharge(tau=self.tau)
-                    self.charging_points[s].charging_power = self.charging_points[s].connected_ev.xcharging_capacity
+                    self.charging_points[s].charging_power = self.charging_points[s].connected_ev.xcharging_power
                     self.power_nominal = self.charging_points[s].charging_power
                     self.charging_points[s].load_profile['LP_%s' % self.charging_points[s].station_id][t] = \
-                        self.charging_points[s].connected_ev.xcharging_capacity
+                        self.charging_points[s].connected_ev.xcharging_power
                     self.charging_points[s].occupancy['LP_%s' % self.charging_points[s].station_id][t] = 1.0
                     self.vehicles.update(
                         {self.charging_points[s].connected_ev.car_id: self.charging_points[s].connected_ev})

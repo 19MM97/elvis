@@ -1,4 +1,4 @@
-Time,"LP_latitude, longitude582",lp_total_load_kW,trafo_preload_kW,lp_occupancy,storage_lp, storage_soc,trafo_loading_kW
+Time,"LP_latitude, longitude609",lp_total_load_kW,trafo_preload_kW,lp_occupancy,storage_lp, storage_soc,trafo_loading_kW
 2018-01-01 00:00:00,0.0,0.0,17.688,0.0,3.75,0.51255,21.438
 2018-01-01 00:01:00,0.0,0.0,17.688,0.0,3.75,0.525098745,21.438
 2018-01-01 00:02:00,0.0,0.0,17.688,0.0,3.75,0.5376462351254999,21.438

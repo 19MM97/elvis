@@ -23,7 +23,7 @@ class Storage:
     :cvar eta_c: Efficiency for charging.
     :cvar eta_d: Efficiency for discharging.
     :cvar self_dis: Self-discharge of the battery in kW.
-    :cvar xcharging_capacity: Rename to xcharging_power. Power the system is charging or \
+    :cvar xcharging_power: Rename to xcharging_power. Power the system is charging or \
     discharging with in each time step.
     :cvar soc: State of charge of the battery (initialized with 0.5).
     :cvar xcharging_time: The time left until the battery is fully charged or discharged based on current power.
@@ -41,7 +41,7 @@ class Storage:
         self.eta_c = 1.0
         self.eta_d = 1.0
         self.self_dis = 0.0001
-        self.xcharging_capacity = None
+        self.xcharging_power = None
         self.soc = 0.5
         self.xcharging_time = None
         self.load_profile = {'LP_%s' % self.battery_id: [0] * simulation_time,
@@ -52,7 +52,7 @@ class Storage:
         Print out key values of the instance.
         """
         print('Storage ID = ', self.battery_id, ';',
-              'xcharging_power', self.xcharging_capacity,
+              'xcharging_power', self.xcharging_power,
               'SOC = ', self.soc, ';',
               'Battery Size = ', self.battery_size, ';',
               'Min. Power = ', self.power_min, ';',
@@ -65,28 +65,28 @@ class Storage:
         Determine the Xcharge power of the battery based on its current SOC and the power needed.
         """
         if self.soc > 0.8 and self.mode == 1:
-            self.xcharging_capacity = - 5 * self.xcharging_capacity * (self.soc - 1.0)
+            self.xcharging_power = - 5 * self.xcharging_power * (self.soc - 1.0)
         if self.soc < 0.2 and self.mode == 0:
-            self.xcharging_capacity = 5 * self.xcharging_capacity * self.soc
+            self.xcharging_power = 5 * self.xcharging_power * self.soc
         else:
-            self.xcharging_capacity = self.xcharging_capacity
+            self.xcharging_power = self.xcharging_power
         
     def check_power(self):
         """
         Check if the SOC and the charging/discharging capacity are within the limits and Xcharge the battery.
         """
         if self.soc <= self.soc_min and self.mode == 0 or self.soc >= 1.0 and self.mode == 1:
-            self.xcharging_capacity = self.self_dis
+            self.xcharging_power = self.self_dis
         else:
-            if self.power_min <= self.xcharging_capacity <= self.power_max:
+            if self.power_min <= self.xcharging_power <= self.power_max:
                 self.xcharge_battery()
             else:
-                if self.xcharging_capacity < self.power_min:
-                    self.xcharging_capacity = self.power_min
+                if self.xcharging_power < self.power_min:
+                    self.xcharging_power = self.power_min
                     self.xcharge_battery()
                 else:
-                    if self.xcharging_capacity > self.power_max:
-                        self.xcharging_capacity = self.power_max
+                    if self.xcharging_power > self.power_max:
+                        self.xcharging_power = self.power_max
                         self.xcharge_battery()
 
     def update_xcharge(self, tau):
@@ -100,8 +100,8 @@ class Storage:
         e_x_kwh = (self.mode - self.soc) * (1 - self.self_dis) * self.battery_size
         e_x_kwh = e_x_kwh / self.eta_c if self.mode == 1 else e_x_kwh / self.eta_d
 
-        self.xcharging_time = abs(e_x_kwh / self.xcharging_capacity * 60)
-        self.soc = (self.battery_size * self.mode - e_x_kwh + self.xcharging_capacity * tau / 60.0) / self.battery_size
+        self.xcharging_time = abs(e_x_kwh / self.xcharging_power * 60)
+        self.soc = (self.battery_size * self.mode - e_x_kwh + self.xcharging_power * tau / 60.0) / self.battery_size
 
         if 1.0 <= self.soc <= self.soc_min:
             self.soc = self.soc
@@ -110,7 +110,7 @@ class Storage:
         """
         Update the charging mode based on the power sign.
         """
-        self.mode = 0 if self.xcharging_capacity < 0 else 1  # 0 discharging and 1 for charging
+        self.mode = 0 if self.xcharging_power < 0 else 1  # 0 discharging and 1 for charging
         
     def flip_mode(self):
         """

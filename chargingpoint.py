@@ -27,7 +27,7 @@ class ChargingPoint:
        :cvar power_factor: Power factor (cos(phi)) of the grid.
        :cvar power_min: Minimal power the charging point can charge with.
        :cvar power_max: Maximal power the charging point can charge with.
-       :cvar charging_power: The charging or discharging power for a specific time step.
+       :cvar xcharging_power: The charging or discharging power for a specific time step.
        :cvar availability: Availability of the charging point (0 ev is connected, 1 no ev is connected).
        :cvar connected_ev: ID of the connected ev.
        :cvar time_start_xcharging: Time the charging/discharging starts.

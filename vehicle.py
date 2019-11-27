@@ -38,8 +38,7 @@ class Vehicle:
     :cvar eta_d: Discharging efficiency (0 to 1.
     :cvar self_dis: Self-discharge of the battery in kW.
     :cvar requested_xcapacity: The requested power of the car in kW.
-    :cvar xcharging_capacity: Combine these two to one.
-    :cvar charging_power:
+    :cvar xcharging_power: Power the vehicle is charging/discharging with per time step.
     :cvar soc: SOC of the vehicle.
     :cvar soc_target: SOC target to be fullfilled while parking time if possible.
     """
@@ -69,8 +68,7 @@ class Vehicle:
         self.eta_d = 1.0
         self.self_dis = 0.0000001
         self.requested_xcapacity = self.power_max
-        self.xcharging_capacity = 0.01
-        self.charging_power = None
+        self.xcharging_power = 0.01
         if dis_soc is None:
             self.soc = 0.1
         else:
@@ -92,7 +90,7 @@ class Vehicle:
               'Min. Power = ', self.power_min, ';',
               'Max. Power = ', self.power_max, ';', ';',
               'Requested Capacity= ', self.requested_xcapacity, ';',
-              'Received Capacity= ', self.xcharging_capacity, ';',
+              'Received Capacity= ', self.xcharging_power, ';',
               'Estimated Charging Time= ', self.xcharging_time,
               'Started Xcharging at: ', self.time_start_xcharging)
 
@@ -101,28 +99,28 @@ class Vehicle:
         Adjusting the charging/discharging capacity based on the current SOC of the vehicle.
         """
         if self.soc > 0.8 and self.mode == 1:
-            self.xcharging_capacity = - 5 * self.xcharging_capacity * (self.soc - 1.0)
+            self.xcharging_power = - 5 * self.xcharging_power * (self.soc - 1.0)
         if self.soc < 0.2 and self.mode == 0:
-            self.xcharging_capacity = 5 * self.xcharging_capacity * self.soc
+            self.xcharging_power = 5 * self.xcharging_power * self.soc
         else:
-            self.xcharging_capacity = self.xcharging_capacity
+            self.xcharging_power = self.xcharging_power
 
     def check_power(self):
         """
         Check if the SOC and the charging/discharging capacity is within the limits and Xcharge the battery.
         """
         if self.soc <= self.soc_min and self.mode == 0 or self.soc >= 1.0 and self.mode == 1:
-            self.xcharging_capacity = self.self_dis
+            self.xcharging_power = self.self_dis
         else:
-            if self.power_min <= self.xcharging_capacity <= self.power_max:
+            if self.power_min <= self.xcharging_power <= self.power_max:
                 self.xcharge_battery()
             else:
-                if self.xcharging_capacity < self.power_min:
-                    self.xcharging_capacity = self.power_min
+                if self.xcharging_power < self.power_min:
+                    self.xcharging_power = self.power_min
                     self.xcharge_battery()
                 else:
-                    if self.xcharging_capacity > self.power_max:
-                        self.xcharging_capacity = self.power_max
+                    if self.xcharging_power > self.power_max:
+                        self.xcharging_power = self.power_max
                         self.xcharge_battery()
 
     def update_xcharge(self, tau):
@@ -136,8 +134,8 @@ class Vehicle:
         e_x_kwh = (self.mode - self.soc) * (1 - self.self_dis) * self.battery_size
         e_x_kwh = e_x_kwh / self.eta_c if self.mode == 1 else e_x_kwh / self.eta_d
 
-        self.xcharging_time = abs(e_x_kwh / self.xcharging_capacity * 60)
-        self.soc = (self.battery_size * self.mode - e_x_kwh + self.xcharging_capacity * tau / 60.0) / self.battery_size
+        self.xcharging_time = abs(e_x_kwh / self.xcharging_power * 60)
+        self.soc = (self.battery_size * self.mode - e_x_kwh + self.xcharging_power * tau / 60.0) / self.battery_size
 
         if 1.0 <= self.soc <= self.soc_min:
             self.soc = self.soc
