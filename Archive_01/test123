@@ -1,7 +1,0 @@
-import pandas as pd
-
-
-d = {'col1': [1, 2], 'col2': [3, 4]}
-df = pd.DataFrame(0, index=range(5,7), columns=['col1'])
-print(df)
-print(df['col1'][0, 1])
