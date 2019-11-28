@@ -4,7 +4,6 @@ Created on Wed Feb 20 08:43:02 2019
 
 @author: draz
 """
-import numpy as np
 
 
 class Storage:
@@ -14,20 +13,20 @@ class Storage:
     :param simulation_time: Current time step.
     :param storage_capacity: Storage capacity in kWh.
 
-    :cvar location: Longitude and latitude of the storage. Needs to be adjusted when data is available.
-    :cvar battery_id: Identifier of the storage.
-    :cvar mode: 0 for discharging, 1 for charging.
-    :cvar soc_min: Minimal SOC of the battery, can't be discharged beyond.
-    :cvar power_max: Maximum power for charging or discharging.
-    :cvar power_min: Minimal power for charging or discharging.
-    :cvar eta_c: Efficiency for charging.
-    :cvar eta_d: Efficiency for discharging.
-    :cvar self_dis: Self-discharge of the battery in kW.
-    :cvar xcharging_power: Rename to xcharging_power. Power the system is charging or \
+    :cvar self.location: Longitude and latitude of the storage. Needs to be adjusted when data is available.
+    :cvar self.battery_id: Identifier of the storage.
+    :cvar self.mode: 0 for discharging, 1 for charging.
+    :cvar self.soc_min: Minimal SOC of the battery, can't be discharged beyond.
+    :cvar self.power_max: Maximum power for charging or discharging.
+    :cvar self.power_min: Minimal power for charging or discharging.
+    :cvar self.eta_c: Efficiency for charging.
+    :cvar self.eta_d: Efficiency for discharging.
+    :cvar self.self_dis: Self-discharge of the battery in kW.
+    :cvar self.xcharging_power: Rename to xcharging_power. Power the system is charging or \
     discharging with in each time step.
-    :cvar soc: State of charge of the battery (initialized with 0.5).
-    :cvar xcharging_time: The time left until the battery is fully charged or discharged based on current power.
-    :cvar load_profile: Time series data of the power.
+    :cvar self.soc: State of charge of the battery (initialized with 0.5).
+    :cvar self.xcharging_time: The time left until the battery is fully charged or discharged based on current power.
+    :cvar self.load_profile: Time series data of the power.
     """
     
     def __init__(self, simulation_time, storage_capacity):

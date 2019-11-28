@@ -98,7 +98,7 @@ def generate_ev(dis_ev_arr, dis_year, simulation_time, fix_key):
     return arrivals, ev_queue
 
 
-def generate_lp(n, power_kw, simulation_time, control):
+def generate_lp(n, power_kw, data):
     """
     Generate charging points based on assumptions.
 
@@ -106,15 +106,13 @@ def generate_lp(n, power_kw, simulation_time, control):
     :type n: int
     :param power_kw: Specified power of charging points (Assumptions).
     :type power_kw: float
-    :param simulation_time: Total simulation time based on chosen time step.
-    :type simulation_time: int
-    :param control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT')
-    :type control: str
+    :param data
+    :
     :return: Charging points as instance of :class:`station`.
     :rtype: list
     """
     charging_points = []
     for s in range(n):
-        charging_points.append(ChargingPoint(power_nominal=power_kw, simulation_time=simulation_time, control=control))
+        charging_points.append(ChargingPoint(data, power_kw,))
 
     return charging_points

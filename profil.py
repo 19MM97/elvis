@@ -6,134 +6,74 @@ Created on Tue Jan 29 12:42:34 2019
 """
 
 from control import first_come_first_served, discrimination_free, control_with_battery
-from data import preload, get_co2_emission, get_energy_price
-from datetime import timedelta
 from events import generate_ev, generate_lp
 from optx import opt_charging
 from storage import Storage
 from vehicle import Vehicle
 import numpy as np
 
-# get_energy_price(1440)
-
 
 class SimulationModel:
     """
         Simulation instance.
 
-        :param assumptions: Simulation configurations.
-        :type assumptions: dict
-        :param number_of_lp: Amount of charging points in the charging infrastructure.
-        :type number_of_lp: int
-        :param power_kw: Power of each charging point in kW.
-        :type power_kw: float
-        :param dis_ev_arr: Hourly arrival distribution for one week. Values from 0 to 1, where 1 means  \
-        arrivals and 0 no arrivals.
-        :type dis_ev_arr: list
-        :param dis_year: Total amount of car arrivals within simulation time.
-        :param dis_year: int
-        :param control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT') as per assumptions.
-        :type control: str
-        :param storage_capacity: Capacity of the storage (in kW).
-        :type storage_capacity: float
-        :param co2_scenario: Position of the CO2_Scenario in the scenario list in assumptions.
-        :type co2_scenario: int
-        :param dis_battery_size: Distribution of the battery sizes accorting to the input file.
-        :type dis_battery_size: list
-        :param dis_soc: Distribution of the SOCs at the arrival time of the vehicles according to the input file.
-        :type dis_soc: list
-        :param dis_user_type: Distribution of the user types specified in the input file. Each user type is having a \
-        minimal and maximal parking time.
-        :type dis_user_type: list
-        :param trafo_preload: Preload of the transformer the charging infrastructure is connected to.
-        :type trafo_preload: float
+        :param data: Data model from :class:`Daten`.
 
-        :cvar number_of_lp: Number of charging points for the simulation.
-        :cvar power_nominal: Nominal power of the charging points.
-        :cvar type_lp: AC or DC charging for the charging points.
-        :cvar control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT') as per assumptions.
-        :cvar dis_ev_arr: Distribution of the vehicle arrivals.
-        :cvar dis_year: Total amount of car arrivals over simulation time.
-        :cvar dis_battery_size: Distribution of the battery capacitites.
-        :cvar dis_soc: Distribtion of the SOC at arrival time.
-        :cvar dis_user_type: Distribution of the user types (parking time).
-        :cvar simulation_time: Total amount of time steps.
-        :cvar trafo_preload: Time series data of the transformer pre-load.
-        :cvar co2_emission: Time series data of the CO2 emissions.
-        :cvar energy_price: Time series data of the energy price.
-        :cvar assumptions: The assumptions specified in :class:`main`.
-        :cvar connected_evs: Time series data with the amount of connected vehicles for every time step.
-        :cvar arrivals: List of all times a car arrives.
-        :cvar tau: Length of a time step in minutes.
-        :cvar charging_points: List containing all chargin points as instances of :class:`chargingpoint`.
-        :cvar vehicles: Dictionary containing all connected ev IDs with their instance of :class:`vehicle`.
-        :cvar storage_capacity: Capacity of the battery of the station in kWh.
-        :cvar storage: Instance of :class:`storage`.
-        :cvar served_ev: Counter of all vehicles connected and charged.
+        :cvar self.number_of_lp: Number of charging points for the simulation.
+        :cvar self.power_nominal: Nominal power of the charging points.
+        :cvar self.type_lp: AC or DC charging for the charging points.
+        :cvar self.connected_evs: Time series data with the amount of connected vehicles for every time step.
+        :cvar self.arrivals: List of all times a car arrives.
+        :cvar self.tau: Length of a time step in minutes.
+        :cvar self.charging_points: List containing all charging points as instances of :class:`chargingpoint`.
+        :cvar self.vehicles: Dictionary containing all connected ev IDs with their instance of :class:`vehicle`.
+        :cvar self.storage_capacity: Capacity of the battery of the station in kWh.
+        :cvar self.storage: Instance of :class:`storage`.
+        :cvar self.served_ev: Counter of all vehicles connected and charged.
     """
 
-    def __init__(self,
-                 assumptions, number_of_lp, power_nominal, dis_ev_arr, dis_year,
-                 control, storage_capacity=None, co2_scenario=None,
-                 dis_battery_size=None, dis_soc=None, dis_user_type=None,
-                 trafo_preload=None):
+    def __init__(self, data):
 
-        self.number_of_lp = number_of_lp
-        self.power_nominal = power_nominal
+        self.number_of_lp = data.amount_cp
+        self.power_nominal = data.power_cp
         self.type_lp = 'AC'
-        self.control = 'UC' if control is None else control
-        self.dis_ev_arr = dis_ev_arr
-        self.dis_year = dis_year
-        self.dis_battery_size = dis_battery_size
-        self.dis_soc = dis_soc
-        self.dis_user_type = dis_user_type
 
-        if assumptions['Simulation_time_in_weeks'] is None:
-            self.simulation_time = int(timedelta(weeks=1).total_seconds() // 60)
-        else:
-            self.simulation_time = assumptions['Simulation_time_in_weeks'] * 60 * 24 * 7
-        if trafo_preload is None:
-            self.trafo_preload = preload(self.simulation_time)
-
-        self.co2_emission = get_co2_emission(self.simulation_time)[co2_scenario]
-        self.energy_price = get_energy_price(self.simulation_time)
-        self.assumptions = assumptions
         self.connected_evs = []
         self.arrivals = None
         self.tau = 1
         self.charging_points = None
         self.vehicles = {}
-        self.storage_capacity = storage_capacity
-        self.storage = Storage(self.simulation_time, self.storage_capacity) if self.control == 'WS' else None
+        self.storage_capacity = data.storage_capacity
+        self.storage = Storage(data.total_simulation_time, self.storage_capacity) if data.control == 'WS' else None
         self.served_ev = 0.0
 
-    def profile_ev_load(self, fix_key):
+    def profile_ev_load(self, fix_key, data):
         """
         Generate charging points, and arrivals. Assign power to each charging point based on control strategy.
 
+        :param data: Data model from class :class:
         :param fix_key: 1 fixes the assumptions. 0 generates new assumptions every simulation.
         :type fix_key: int
         """
-        self.charging_points = generate_lp(self.number_of_lp, self.power_nominal, self.simulation_time, self.control)
-        arrivals, ev_queue = generate_ev(self.dis_ev_arr, self.dis_year, self.simulation_time, fix_key)
+        self.charging_points = generate_lp(self.number_of_lp, self.power_nominal, data)
+        arrivals, ev_queue = generate_ev(data.dis_ev_arr, data.dis_year, data.total_simulation_time, fix_key)
         self.arrivals = arrivals if self.arrivals is None else self.arrivals
 
         i = 0
-        for t in range(0, self.simulation_time, self.tau):
+        for t in range(0, data.total_simulation_time, self.tau):
             n = np.where(np.asanyarray(arrivals) == t)[0]
             if t == arrivals[i]:
                 for m in n:
                     if ev_queue.full() is False:
-                        ev = Vehicle(t, dis_battery_size=self.dis_battery_size, dis_soc=self.dis_soc,
-                                     dis_user_type=self.dis_user_type)
+                        ev = Vehicle(t, data)
                         ev_queue.put(ev)
                         i += 1 if arrivals[m] != arrivals[-1] else 0
                     else:
                         i += 1 if arrivals[m] != arrivals[-1] else 0
 
             # If t is outside opening hours disconnect all evs from the charging station and set charging power to 0
-            if t <= self.assumptions['opening_hours'][0] * 60 + t // 1440 * 1440 or \
-                    t >= self.assumptions['opening_hours'][1] * 60 + t // 1440 * 1440:
+            if t <= data.user_assumptions['opening_hours'][0] * 60 + t // 1440 * 1440 or \
+                    t >= data.user_assumptions['opening_hours'][1] * 60 + t // 1440 * 1440:
                 for s in self.charging_points:
                     s.availability = 1.0
                     s.charging_power = 0.0
@@ -145,27 +85,28 @@ class SimulationModel:
                 if self.charging_points[s].availability == 1 and not ev_queue.empty():
                     ev = ev_queue.get()
                     if t - ev.arrival_time < min(ev.parking_time,
-                                                 self.assumptions['opening_hours'][-1] -
-                                                 self.assumptions['opening_hours'][0]) * 60:
+                                                 data.user_assumptions['opening_hours'][-1] -
+                                                 data.user_assumptions['opening_hours'][0]) * 60:
                         self.charging_points[s].assign_ev(ev, t)
                         self.charging_points[s].connected_ev.charging_power = self.charging_points[s].power_nominal
                         self.served_ev += 1
                         self.vehicles.update({ev.car_id: ev})
-                        if self.control == 'OPT':
-                            self.charging_points = opt_charging(t, self.trafo_preload, self.charging_points,
-                                                                self.assumptions,
-                                                                self.co2_emission, self.energy_price)
+                        if data.control == 'OPT':
+                            self.charging_points = opt_charging(t, data.transformer_preload, self.charging_points,
+                                                                data.user_assumptions,
+                                                                data.co2_emission, data.energy_price)
 
             self.connected_evs.append(len([s.availability for s in self.charging_points if s.availability == 0]))
 
             # Assign power based on control strategy
             charging_power: float = 0.0
-            if self.control == 'UC':
+            if data.control == 'UC':
                 charging_power = self.power_nominal
-            elif self.control == 'FD':
-                charging_power = discrimination_free(t, self.trafo_preload, self.connected_evs[t])
-            elif self.control == 'WS':
-                available_from_trafo, xcharging_power = control_with_battery(t, self.power_nominal, self.trafo_preload,
+            elif data.control == 'FD':
+                charging_power = discrimination_free(t, data.transformer_preload, self.connected_evs[t])
+            elif data.control == 'WS':
+                available_from_trafo, xcharging_power = control_with_battery(t, self.power_nominal,
+                                                                             data.transformer_preload,
                                                                              self.connected_evs[t])
 
                 self.storage.xcharging_power = xcharging_power
@@ -182,16 +123,16 @@ class SimulationModel:
                 self.storage.load_profile['SOC_%s' % self.storage.battery_id][t] = self.storage.soc
 
             for s in range(len(self.charging_points)):
-                if self.control == 'FCFS':
+                if data.control == 'FCFS':
                     charging_load = sum([s.load_profile['LP_%s' % s.station_id][t] for s in self.charging_points])
-                    charging_power = first_come_first_served(t, charging_load, self.trafo_preload)
+                    charging_power = first_come_first_served(t, charging_load, data.transformer_preload)
 
                 if self.charging_points[s].availability == 0:
                     self.charging_points[s].connected_ev.requested_xcapacity = \
                         self.charging_points[s].connected_ev.power_max
                     self.charging_points[s].charging_power = self.charging_points[s].connected_ev.requested_xcapacity
 
-                    if self.control == 'OPT':
+                    if data.control == 'OPT':
                         self.charging_points[s].charging_power = self.charging_points[s].chargingPlan[t]
                     else:
                         self.charging_points[s].charging_power = charging_power

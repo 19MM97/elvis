@@ -15,51 +15,45 @@ class Vehicle:
 
     :param t: Current time step.
     :type t: int
-    :param dis_battery_size: Distribution of the battery sizes according to the input file.
-    :type dis_battery_size: list
-    :param dis_soc: Distribution of the soc at the arrival time of the evs according to the input file.
-    :type dis_soc: list
-    :param dis_user_type: Distribution of the user types according to the input file. \
-    Each user type is having a minimal and maximal parking time.
-    :type dis_user_type: list
     :param soc_target: The SOC of the electric vehicle wants to have when leaving.
     :type soc_target: float
 
-    :cvar arrival_time: The arrival time of the vehicle.
-    :cvar car_id: Identifier of the car.
-    :cvar parking_time: Parking time in hours.
-    :cvar mode: Charging: 1 and discharging 0.
-    :cvar battery_size: Battery capacity in kWh.
-    :cvar time_start_xcharging: Time the charging/discharging begins.
-    :cvar soc_min: SOC minimum (0 to 1). Can't be discharged below.
-    :cvar power_min: Minimal power the car can charge or discharge.
-    :cvar power_max: Maximal power the car can charge or discharge.
-    :cvar eta_c: Charging efficiency (0 to 1).
-    :cvar eta_d: Discharging efficiency (0 to 1.
-    :cvar self_dis: Self-discharge of the battery in kW.
-    :cvar requested_xcapacity: The requested power of the car in kW.
-    :cvar xcharging_power: Power the vehicle is charging/discharging with per time step.
-    :cvar soc: SOC of the vehicle.
-    :cvar soc_target: SOC target to be fullfilled while parking time if possible.
+    :cvar self.arrival_time: The arrival time of the vehicle.
+    :cvar self.car_id: Identifier of the car.
+    :cvar self.parking_time: Parking time in hours.
+    :cvar self.mode: Charging: 1 and discharging 0.
+    :cvar self.battery_size: Battery capacity in kWh.
+    :cvar self.time_start_xcharging: Time the charging/discharging begins.
+    :cvar self.soc_min: SOC minimum (0 to 1). Can't be discharged below.
+    :cvar self.power_min: Minimal power the car can charge or discharge.
+    :cvar self.power_max: Maximal power the car can charge or discharge.
+    :cvar self.eta_c: Charging efficiency (0 to 1).
+    :cvar self.eta_d: Discharging efficiency (0 to 1.
+    :cvar self.self_dis: Self-discharge of the battery in kW.
+    :cvar self.requested_xcapacity: The requested power of the car in kW.
+    :cvar self.xcharging_power: Power the vehicle is charging/discharging with per time step.
+    :cvar self.soc: SOC of the vehicle.
+    :cvar self.soc_target: SOC target to be fullfilled while parking time if possible.
     """
-    def __init__(self, t, dis_battery_size=None, dis_soc=None, dis_user_type=None, soc_target=None):
+    def __init__(self, t, data, soc_target=None):
         self.arrival_time = t
         self.car_id = 'ev' + str(self.arrival_time) + '_' + str(np.random.random_integers(0, 100000000, 1)[0])
-        if dis_user_type is None:
+        if data.dis_user_type is None:
             self.parking_time = 1
         else:
             user_size = []
-            for ra in range(len(dis_user_type[1])):
-                user_size.append(stats.truncnorm.rvs((dis_user_type[1][ra] - 40) / 10,
-                                                     (dis_user_type[2][ra] - 40) / 10, loc=40, scale=10, size=1)[0])
+            for ra in range(len(data.dis_user_type[1])):
+                user_size.append(stats.truncnorm.rvs((data.dis_user_type[1][ra] - 40) / 10,
+                                                     (data.dis_user_type[2][ra] - 40) / 10,
+                                                     loc=40, scale=10, size=1)[0])
 
-            self.parking_time = np.random.choice(user_size, p=dis_user_type[4])
+            self.parking_time = np.random.choice(user_size, p=data.dis_user_type[4])
 
         self.mode = 1
-        if dis_battery_size is None:
+        if data.dis_battery_size is None:
             self.battery_size = 60.0
         else:
-            self.battery_size = np.random.choice(dis_battery_size[1], p=dis_battery_size[3])
+            self.battery_size = np.random.choice(data.dis_battery_size[1], p=data.dis_battery_size[3])
         self.time_start_xcharging = None
         self.soc_min = 0.0
         self.power_min = 0.0
@@ -69,10 +63,10 @@ class Vehicle:
         self.self_dis = 0.0000001
         self.requested_xcapacity = self.power_max
         self.xcharging_power = 0.01
-        if dis_soc is None:
+        if data.dis_soc is None:
             self.soc = 0.1
         else:
-            self.soc = np.random.choice(dis_soc[0], p=dis_soc[2])
+            self.soc = np.random.choice(data.dis_soc[0], p=data.dis_soc[2])
         self.xcharging_time = None
         if soc_target is None:
             self.soc_target = 1.0

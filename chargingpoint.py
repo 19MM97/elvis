@@ -15,30 +15,26 @@ class ChargingPoint:
 
        :param power_nominal: Power the station charges the vehicle with.
        :type power_nominal: float
-       :param simulation_time: Total length of the simulation time.
-       :type simulation_time: int
-       :param control: Control type as per assumptions.
-       :type control: str
 
-       :cvar location: Location of the charging point/station. Needs to be adjusted when data can be provided.
-       :cvar station_id: Identifier for each charging point.
-       :cvar type_lp: DC or AC charging.
-       :cvar power_nominal: Nominal power of the charging point.
-       :cvar power_factor: Power factor (cos(phi)) of the grid.
-       :cvar power_min: Minimal power the charging point can charge with.
-       :cvar power_max: Maximal power the charging point can charge with.
-       :cvar xcharging_power: The charging or discharging power for a specific time step.
-       :cvar availability: Availability of the charging point (0 ev is connected, 1 no ev is connected).
-       :cvar connected_ev: ID of the connected ev.
-       :cvar time_start_xcharging: Time the charging/discharging starts.
-       :cvar load_profile: Time series data of the charging power.
-       :cvar control: Control type as per assumptions.
-       :cvar served_evs: Counter for every connected ev that charged/discharged.
-       :cvar occupancy: Time series data, 0 for charging point is available and 1 for charging point is used.
-       :cvar charging plan: Day ahead plan for the charging schedule.
+       :cvar self.location: Location of the charging point/station. Needs to be adjusted when data can be provided.
+       :cvar self.station_id: Identifier for each charging point.
+       :cvar self.type_lp: DC or AC charging.
+       :cvar self.power_nominal: Nominal power of the charging point.
+       :cvar self.power_factor: Power factor (cos(phi)) of the grid.
+       :cvar self.power_min: Minimal power the charging point can charge with.
+       :cvar self.power_max: Maximal power the charging point can charge with.
+       :cvar self.xcharging_power: The charging or discharging power for a specific time step.
+       :cvar self.availability: Availability of the charging point (0 ev is connected, 1 no ev is connected).
+       :cvar self.connected_ev: ID of the connected ev.
+       :cvar self.time_start_xcharging: Time the charging/discharging starts.
+       :cvar self.load_profile: Time series data of the charging power.
+       :cvar self.control: Control type as per assumptions.
+       :cvar self.served_evs: Counter for every connected ev that charged/discharged.
+       :cvar self.occupancy: Time series data, 0 for charging point is available and 1 for charging point is used.
+       :cvar self.charging plan: Day ahead plan for the charging schedule.
     """
     
-    def __init__(self, power_nominal, simulation_time, control):
+    def __init__(self, data, power_nominal):
         self.location = str('latitude, longitude')
         self.station_id = self.location + str(np.random.randint(100, 1000))
         self.type_lp = 'AC'
@@ -50,10 +46,9 @@ class ChargingPoint:
         self.availability = 1
         self.connected_ev = None
         self.time_start_xcharging = None
-        self.load_profile = {'LP_%s' % self.station_id: [0] * simulation_time}
-        self.control = control if control is not None else 'UC'
+        self.load_profile = {'LP_%s' % self.station_id: [0] * data.total_simulation_time}
         self.served_evs = 0
-        self.occupancy = {'LP_%s' % self.station_id: [0] * simulation_time}
+        self.occupancy = {'LP_%s' % self.station_id: [0] * data.total_simulation_time}
         self.charging_plan = None
 
     def station_data(self, t=None):
@@ -69,7 +64,7 @@ class ChargingPoint:
               'connectedEV = ', self.connected_ev, ';',
               'max. Power = ', self.power_max, ';',
               'availability = ', self.availability)
-            
+
     def assign_ev(self, ev=None, t=None):
         """
         Dock vehicle to the station.

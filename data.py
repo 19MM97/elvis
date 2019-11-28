@@ -9,19 +9,21 @@ if __name__ == 'data':
         exec('{} = pd.DataFrame(stations_config.parse(sheet_name=sheet) )'.format(sheet))
 
 
-def input_2_profile_evl(dis_location):
+def input_2_profile_evl(dis_location, data):
     """
     Read the data concerning battery sizes, SOCs, user types, arrival times from input file.
 
     :param dis_location: Location of the charging infrastructure (according to input file).
     :type dis_location: str
+    :param data: Data model from :class:`Daten`.
     :return: Distribution of battery sizes, SOC at arrival, user type, arrival times
     """
-    dis_ev_arr = globals()['Arr_Typ1'][dis_location].tolist()
-    dis_user_type = [globals()['Ort1'][a].values.tolist() for a in globals()['Ort1'].columns]
-    dis_soc = [globals()['SOC'][a].values.tolist() for a in globals()['SOC'].columns]
-    dis_battery_size = [globals()['Batterysize'][a].values.tolist() for a in globals()['Batterysize'].columns]
-    return dis_battery_size, dis_soc, dis_user_type, dis_ev_arr
+
+    data.dis_ev_arr = globals()['Arr_Typ1'][dis_location].tolist()
+    data.dis_user_type = [globals()['Ort1'][a].values.tolist() for a in globals()['Ort1'].columns]
+    data.dis_soc = [globals()['SOC'][a].values.tolist() for a in globals()['SOC'].columns]
+    data.dis_battery_size = [globals()['Batterysize'][a].values.tolist() for a in globals()['Batterysize'].columns]
+    data.dis_year = list([data.car_amount] * data.user_assumptions['Simulation_time_in_weeks'])
 
 
 def get_co2_emission(simulation_time):
@@ -67,6 +69,7 @@ def preload(simulation_time):
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
     :return: Transformer preload time series data.
+    :rtype: list
     """
     trafo_preload = globals()['Trafo_Vorbelastung']
     date_time_pre = pd.date_range('2018-01-01', periods=simulation_time // 10 + 1, freq='10T')

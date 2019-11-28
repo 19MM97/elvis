@@ -13,46 +13,31 @@ import pandas as pd
 from plots import get_plots
 from profil import SimulationModel
 import time
+import Daten
 
 
-def profile_ev_load(fix_key, assumptions, lp_amount, power, control, car_amount, storage_capacity=None, co2_scenario=None):
+def profile_ev_load(fix_key, assumptions, data):
     """Initialize the simulation instance and return data of the simulation result.
 
     :param fix_key: 1 fixes the assumptions. 0 generates new assumptions every simulation.
     :type fix_key: int
     :param assumptions: Containing all simulation configurations.
     :type assumptions: dict
-    :param lp_amount: Amount of charging points the charging infrastructure has.
-    :type lp_amount: int
-    :param power: Power of each charging point in kW.
-    :type power: float
-    :param control: Control Strategy ('UC', 'FD', 'FCFS', 'WS', 'OPT')
-    :type control: str
-    :param car_amount: Amount of car arrivals per week.
-    :type car_amount: int
-    :param storage_capacity: Storage capacity (in kW).
-    :type storage_capacity: float
-    :param co2_scenario: Position of the CO2_Scenario in the scenario list in assumptions.
-    :type co2_scenario: int
+    :param data: Instance of :class:`Daten` containing all simulation parameters and user assumptions.
     :return: Returning the power curves, the indicators and the the instance of :class:`profil` \
     of the simulation.
     :rtype: tuple
     """
-    dis_battery_size, dis_soc, dis_user_type, dis_ev_arr = input_2_profile_evl(assumptions['Arrival_distribution'])
-    dis_year = list([car_amount] * assumptions['Simulation_time_in_weeks'])
+    input_2_profile_evl(assumptions['Arrival_distribution'], data)
 
     total_load = pd.DataFrame()
     df_occupancy = pd.DataFrame()
 
     indicators = {}
+    data.get_time_series_data()
+    load_profile = SimulationModel(data)
 
-    load_profile = SimulationModel(assumptions, lp_amount, power, dis_ev_arr=dis_ev_arr,
-                                   dis_year=dis_year, control=control,
-                                   storage_capacity=storage_capacity, co2_scenario=co2_scenario,
-                                   dis_battery_size=dis_battery_size, dis_soc=dis_soc,
-                                   dis_user_type=dis_user_type)
-
-    load_profile.profile_ev_load(fix_key)
+    load_profile.profile_ev_load(fix_key, data)
 
     for s in load_profile.charging_points:
         s.load_profile = pd.DataFrame(s.load_profile)
@@ -61,10 +46,10 @@ def profile_ev_load(fix_key, assumptions, lp_amount, power, control, car_amount,
         df_occupancy = pd.concat([df_occupancy, s.occupancy], axis=1)
 
     total_load['lp_total_load_kW'] = total_load.sum(axis=1)
-    total_load['trafo_preload_kW'] = load_profile.trafo_preload[0]
+    total_load['trafo_preload_kW'] = data.transformer_preload[0]
     total_load['lp_occupancy'] = df_occupancy.sum(axis=1)
 
-    if control == 'WS':
+    if data.control == 'WS':
         total_load['storage_lp'] = load_profile.storage.load_profile['LP_%s' % load_profile.storage.battery_id]
         total_load[' storage_soc'] = load_profile.storage.load_profile['SOC_%s' % load_profile.storage.battery_id]
         total_load['trafo_loading_kW'] = (total_load['lp_total_load_kW'] + total_load['trafo_preload_kW'] +
@@ -77,15 +62,16 @@ def profile_ev_load(fix_key, assumptions, lp_amount, power, control, car_amount,
     total_load['Time'] = datetime
     total_load = total_load.set_index('Time')
 
-    indicators_temp = get_indicators(load_profile, total_load, control)
+    indicators_temp = get_indicators(load_profile, total_load, data)
     indicators.update(indicators_temp)
 
     path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'results/')
-
-    output_name = path + 'res_%s_%s_%s_%s_%s_%s.csv' % (car_amount, power, lp_amount, control, co2_scenario, storage_capacity)
+    output_name = path + 'res_%s_%s_%s_%s_%s_%s.csv' % (data.car_amount, data.power_cp, data.amount_cp, data.control,
+                                                        data.co2_scenario, data.storage_capacity)
     total_load.to_csv(output_name)
 
-    output_name = path + 'indicators_%s_%s_%s_%s_%s_%s.csv' % (car_amount, power, lp_amount, control, co2_scenario, storage_capacity)
+    output_name = path + 'indicators_%s_%s_%s_%s_%s_%s.csv' % (data.car_amount, data.power_cp, data.amount_cp,
+                                                               data.control, data.co2_scenario, data.storage_capacity)
     pd.DataFrame.from_dict(indicators, orient='index').to_csv(output_name)
 
     return total_load, indicators, load_profile
@@ -95,53 +81,33 @@ def main():
     """Configure simulation settings. Start simulation for each configuration. Save simulation results."""
 
     start = time.time()
-    assumptions = {
-        'Scenario': 'S2',
-        'Location': 'Parkhaus/Kaufhaus',
-        'Amount_lp': [1],
-        'Power_in_kW': [22],
-        'Arrival_distribution': 'AutosDiss-supermarket',
-        'possible_parking_time': 'Kurz (Normalverteilung, µ=40, σ =10)',
-        'Ev_battery_capacity_in_kWh': 'Market Research BEV 2017',
-        'Days_per_week': 6,
-        'Simulation_time_in_weeks': 1,
-        'Preload': 'Station4_1',
-        'Control_strategies': ['UC', 'FD', 'FCFS', 'WS', 'OPT'],
-        'Storage_capacity': [5],  # R1000-UPB4860 Gen2,
-        'Amount_evs': [12],  # per week
-        'CO2_Szenario':   ['Referenzszenario',
-                           # 'Zukunftsszenario_1',
-                           # 'Zukunftsszenario_2',
-                           # 'Zukunftsszenario_3',
-                           # 'Zukunftsszenario _4',
-                           # 'Zunftsszenario _5',
-                           # 'Zunftsszenario _6'
-                           ],
-        'cost_weights': [0.5],
-        'co2_weights':  [0.5],
-        'opening_hours': [7, 21]
-        }
+    data = Daten.DataClass()
+    assumptions = data.user_assumptions
 
     kpi_s = []
     load_profiles = []
     output = []
 
     for car_amount in assumptions['Amount_evs']:  # per week
+        data.car_amount = car_amount
         fix_key = 0  # 1 for fixing the assumptions
         for power in assumptions['Power_in_kW']:
+            data.power_cp = power
             for lp_amount in assumptions['Amount_lp']:
+                data.amount_cp = lp_amount
                 for control in assumptions['Control_strategies']:
+                    data.control = control
                     for c02_scenario in range(len(assumptions['CO2_Szenario'])):
+                        data.co2_scenario = c02_scenario
                         if control == 'WS':
                             for storage_capacity in assumptions['Storage_capacity']:
-                                output = profile_ev_load(fix_key, assumptions, lp_amount, power, control, car_amount,
-                                                         storage_capacity, co2_scenario=c02_scenario)
+                                data.storage_capacity = storage_capacity
+                                output = profile_ev_load(fix_key, assumptions, data)
                                 kpi_s.append(output[1])
                                 load_profiles.append((output[0]))
                                 fix_key = 0
                         else:
-                            output = profile_ev_load(fix_key, assumptions, lp_amount, power, control, car_amount,
-                                                     co2_scenario=c02_scenario)
+                            output = profile_ev_load(fix_key, assumptions, data)
                             kpi_s.append(output[1])
                             load_profiles.append(output[0])
                             fix_key = 0
@@ -167,8 +133,8 @@ def main():
         df_load_profiles[col+'trafo_load'] = list(df['trafo_loading_kW'][0:1440])
 
     df_load_profiles['Preload'] = list(df['trafo_preload_kW'][0:1440])
-    df_load_profiles['Energy_price_(Euro/MWh)'] = output[2].energy_price[0:1440]
-    df_load_profiles['CO2e(kg/kWh)'] = output[2].co2_emission[0:1440]
+    df_load_profiles['Energy_price_(Euro/MWh)'] = data.energy_price[0:1440]
+    df_load_profiles['CO2e(kg/kWh)'] = data.co2_emission[0:1440]
 
     control = 0
 
