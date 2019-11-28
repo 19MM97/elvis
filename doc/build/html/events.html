@@ -83,7 +83,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">events module</a></li>
@@ -232,24 +231,20 @@
 
 <dl class="function">
 <dt id="events.generate_lp">
-<code class="sig-prename descclassname">events.</code><code class="sig-name descname">generate_lp</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">power_kw</em>, <em class="sig-param">simulation_time</em>, <em class="sig-param">control</em><span class="sig-paren">)</span><a class="headerlink" href="#events.generate_lp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">events.</code><code class="sig-name descname">generate_lp</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">power_kw</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#events.generate_lp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate charging points based on assumptions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n</strong> (<em>int</em>) – Amount of charging points.</p></li>
 <li><p><strong>power_kw</strong> (<em>float</em>) – Specified power of charging points (Assumptions).</p></li>
-<li><p><strong>simulation_time</strong> (<em>int</em>) – Total simulation time based on chosen time step.</p></li>
-<li><p><strong>control</strong> (<em>str</em>) – Control Strategy (‘UC’, ‘FD’, ‘FCFS’, ‘WS’, ‘OPT’)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Charging points as instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">station</span></code>.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
 </dl>
+<p>:param data
+:
+:return: Charging points as instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">station</span></code>.
+:rtype: list</p>
 </dd></dl>
 
 </div>

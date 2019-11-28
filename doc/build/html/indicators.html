@@ -83,7 +83,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -168,14 +167,14 @@
 <p>&#64;author: draz</p>
 <dl class="function">
 <dt id="indicators.get_indicators">
-<code class="sig-prename descclassname">indicators.</code><code class="sig-name descname">get_indicators</code><span class="sig-paren">(</span><em class="sig-param">load_profile</em>, <em class="sig-param">total_load</em>, <em class="sig-param">control</em><span class="sig-paren">)</span><a class="headerlink" href="#indicators.get_indicators" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">indicators.</code><code class="sig-name descname">get_indicators</code><span class="sig-paren">(</span><em class="sig-param">load_profile</em>, <em class="sig-param">total_load</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#indicators.get_indicators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the indicators of the simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>load_profile</strong> – Instance of the <a class="reference internal" href="profil.html#profil.SimulationModel" title="profil.SimulationModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">profil.SimulationModel</span></code></a></p></li>
 <li><p><strong>total_load</strong> – Data frame containing time series data of charging points and the transformer.</p></li>
-<li><p><strong>control</strong> (<em>str</em>) – Control Strategy (‘UC’, ‘FD’, ‘FCFS’, ‘WS’, ‘OPT’) as per assumptions.</p></li>
+<li><p><strong>data</strong> – Data model from <code class="xref py py-class docutils literal notranslate"><span class="pre">Daten</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

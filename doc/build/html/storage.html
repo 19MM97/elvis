@@ -83,7 +83,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -181,19 +180,19 @@ Represents the batteries used in the charging infrastructure.</p>
 </dd>
 <dt class="field-even">Variables</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>location</strong> – Longitude and latitude of the storage. Needs to be adjusted when data is available.</p></li>
-<li><p><strong>battery_id</strong> – Identifier of the storage.</p></li>
-<li><p><strong>mode</strong> – 0 for discharging, 1 for charging.</p></li>
-<li><p><strong>soc_min</strong> – Minimal SOC of the battery, can’t be discharged beyond.</p></li>
-<li><p><strong>power_max</strong> – Maximum power for charging or discharging.</p></li>
-<li><p><strong>power_min</strong> – Minimal power for charging or discharging.</p></li>
-<li><p><strong>eta_c</strong> – Efficiency for charging.</p></li>
-<li><p><strong>eta_d</strong> – Efficiency for discharging.</p></li>
-<li><p><strong>self_dis</strong> – Self-discharge of the battery in kW.</p></li>
-<li><p><strong>xcharging_capacity</strong> – Rename to xcharging_power. Power the system is charging or     discharging with in each time step.</p></li>
-<li><p><strong>soc</strong> – State of charge of the battery (initialized with 0.5).</p></li>
-<li><p><strong>xcharging_time</strong> – The time left until the battery is fully charged or discharged based on current power.</p></li>
-<li><p><strong>load_profile</strong> – Time series data of the power.</p></li>
+<li><p><strong>self.location</strong> – Longitude and latitude of the storage. Needs to be adjusted when data is available.</p></li>
+<li><p><strong>self.battery_id</strong> – Identifier of the storage.</p></li>
+<li><p><strong>self.mode</strong> – 0 for discharging, 1 for charging.</p></li>
+<li><p><strong>self.soc_min</strong> – Minimal SOC of the battery, can’t be discharged beyond.</p></li>
+<li><p><strong>self.power_max</strong> – Maximum power for charging or discharging.</p></li>
+<li><p><strong>self.power_min</strong> – Minimal power for charging or discharging.</p></li>
+<li><p><strong>self.eta_c</strong> – Efficiency for charging.</p></li>
+<li><p><strong>self.eta_d</strong> – Efficiency for discharging.</p></li>
+<li><p><strong>self.self_dis</strong> – Self-discharge of the battery in kW.</p></li>
+<li><p><strong>self.xcharging_power</strong> – Rename to xcharging_power. Power the system is charging or     discharging with in each time step.</p></li>
+<li><p><strong>self.soc</strong> – State of charge of the battery (initialized with 0.5).</p></li>
+<li><p><strong>self.xcharging_time</strong> – The time left until the battery is fully charged or discharged based on current power.</p></li>
+<li><p><strong>self.load_profile</strong> – Time series data of the power.</p></li>
 </ul>
 </dd>
 </dl>

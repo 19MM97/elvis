@@ -13,7 +13,7 @@ import pandas as pd
 from plots import get_plots
 from profil import SimulationModel
 import time
-import Daten
+import daten
 import sys
 
 
@@ -84,7 +84,7 @@ def main():
     """Configure simulation settings. Start simulation for each configuration. Save simulation results."""
 
     start = time.time()
-    data = Daten.DataClass()
+    data = daten.DataClass()
     assumptions = data.user_assumptions
 
     kpi_s = []

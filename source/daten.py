@@ -76,6 +76,7 @@ class DataClass:
 def read_user_assumptions():
     """
     Read yaml file containing the data specified by the user.
+
     :return: User input data.
     :rtype: dict
     """

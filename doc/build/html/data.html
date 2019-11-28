@@ -83,7 +83,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -194,11 +193,14 @@
 
 <dl class="function">
 <dt id="data.input_2_profile_evl">
-<code class="sig-prename descclassname">data.</code><code class="sig-name descname">input_2_profile_evl</code><span class="sig-paren">(</span><em class="sig-param">dis_location</em><span class="sig-paren">)</span><a class="headerlink" href="#data.input_2_profile_evl" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">data.</code><code class="sig-name descname">input_2_profile_evl</code><span class="sig-paren">(</span><em class="sig-param">dis_location</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#data.input_2_profile_evl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the data concerning battery sizes, SOCs, user types, arrival times from input file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dis_location</strong> (<em>str</em>) – Location of the charging infrastructure (according to input file).</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dis_location</strong> (<em>str</em>) – Location of the charging infrastructure (according to input file).</p></li>
+<li><p><strong>data</strong> – Data model from <code class="xref py py-class docutils literal notranslate"><span class="pre">Daten</span></code>.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Distribution of battery sizes, SOC at arrival, user type, arrival times</p>
@@ -216,6 +218,9 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Transformer preload time series data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>

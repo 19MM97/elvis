@@ -83,8 +83,9 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint  module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="daten.html">daten module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="indicators.html">indicators module</a></li>
@@ -174,19 +175,14 @@
 
 <dl class="function">
 <dt id="main.profile_ev_load">
-<code class="sig-prename descclassname">main.</code><code class="sig-name descname">profile_ev_load</code><span class="sig-paren">(</span><em class="sig-param">fix_key</em>, <em class="sig-param">assumptions</em>, <em class="sig-param">lp_amount</em>, <em class="sig-param">power</em>, <em class="sig-param">control</em>, <em class="sig-param">car_amount</em>, <em class="sig-param">storage_capacity=None</em>, <em class="sig-param">co2_scenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#main.profile_ev_load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">main.</code><code class="sig-name descname">profile_ev_load</code><span class="sig-paren">(</span><em class="sig-param">fix_key</em>, <em class="sig-param">assumptions</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#main.profile_ev_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the simulation instance and return data of the simulation result.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fix_key</strong> (<em>int</em>) – 1 fixes the assumptions. 0 generates new assumptions every simulation.</p></li>
 <li><p><strong>assumptions</strong> (<em>dict</em>) – Containing all simulation configurations.</p></li>
-<li><p><strong>lp_amount</strong> (<em>int</em>) – Amount of charging points the charging infrastructure has.</p></li>
-<li><p><strong>power</strong> (<em>float</em>) – Power of each charging point in kW.</p></li>
-<li><p><strong>control</strong> (<em>str</em>) – Control Strategy (‘UC’, ‘FD’, ‘FCFS’, ‘WS’, ‘OPT’)</p></li>
-<li><p><strong>car_amount</strong> (<em>int</em>) – Amount of car arrivals per week.</p></li>
-<li><p><strong>storage_capacity</strong> (<em>float</em>) – Storage capacity (in kW).</p></li>
-<li><p><strong>co2_scenario</strong> (<em>int</em>) – Position of the CO2_Scenario in the scenario list in assumptions.</p></li>
+<li><p><strong>data</strong> – Instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">Daten</span></code> containing all simulation parameters and user assumptions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

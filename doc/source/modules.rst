@@ -6,6 +6,7 @@ DAI copy_trysphinx
 
    chargingpoint
    control
+   daten
    data
    events
    indicators

@@ -82,7 +82,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -167,38 +166,34 @@
 <p>&#64;author: draz</p>
 <dl class="class">
 <dt id="vehicle.Vehicle">
-<em class="property">class </em><code class="sig-prename descclassname">vehicle.</code><code class="sig-name descname">Vehicle</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">dis_battery_size=None</em>, <em class="sig-param">dis_soc=None</em>, <em class="sig-param">dis_user_type=None</em>, <em class="sig-param">soc_target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vehicle.Vehicle" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">vehicle.</code><code class="sig-name descname">Vehicle</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">data</em>, <em class="sig-param">soc_target=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vehicle.Vehicle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents all electric vehicles within the simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>t</strong> (<em>int</em>) – Current time step.</p></li>
-<li><p><strong>dis_battery_size</strong> (<em>list</em>) – Distribution of the battery sizes according to the input file.</p></li>
-<li><p><strong>dis_soc</strong> (<em>list</em>) – Distribution of the soc at the arrival time of the evs according to the input file.</p></li>
-<li><p><strong>dis_user_type</strong> (<em>list</em>) – Distribution of the user types according to the input file.     Each user type is having a minimal and maximal parking time.</p></li>
 <li><p><strong>soc_target</strong> (<em>float</em>) – The SOC of the electric vehicle wants to have when leaving.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Variables</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>arrival_time</strong> – The arrival time of the vehicle.</p></li>
-<li><p><strong>car_id</strong> – Identifier of the car.</p></li>
-<li><p><strong>parking_time</strong> – Parking time in hours.</p></li>
-<li><p><strong>mode</strong> – Charging: 1 and discharging 0.</p></li>
-<li><p><strong>battery_size</strong> – Battery capacity in kWh.</p></li>
-<li><p><strong>time_start_xcharging</strong> – Time the charging/discharging begins.</p></li>
-<li><p><strong>soc_min</strong> – SOC minimum (0 to 1). Can’t be discharged below.</p></li>
-<li><p><strong>power_min</strong> – Minimal power the car can charge or discharge.</p></li>
-<li><p><strong>power_max</strong> – Maximal power the car can charge or discharge.</p></li>
-<li><p><strong>eta_c</strong> – Charging efficiency (0 to 1).</p></li>
-<li><p><strong>eta_d</strong> – Discharging efficiency (0 to 1.</p></li>
-<li><p><strong>self_dis</strong> – Self-discharge of the battery in kW.</p></li>
-<li><p><strong>requested_xcapacity</strong> – The requested power of the car in kW.</p></li>
-<li><p><strong>xcharging_capacity</strong> – Combine these two to one.</p></li>
-<li><p><strong>charging_power</strong> – </p></li>
-<li><p><strong>soc</strong> – SOC of the vehicle.</p></li>
-<li><p><strong>soc_target</strong> – SOC target to be fullfilled while parking time if possible.</p></li>
+<li><p><strong>self.arrival_time</strong> – The arrival time of the vehicle.</p></li>
+<li><p><strong>self.car_id</strong> – Identifier of the car.</p></li>
+<li><p><strong>self.parking_time</strong> – Parking time in hours.</p></li>
+<li><p><strong>self.mode</strong> – Charging: 1 and discharging 0.</p></li>
+<li><p><strong>self.battery_size</strong> – Battery capacity in kWh.</p></li>
+<li><p><strong>self.time_start_xcharging</strong> – Time the charging/discharging begins.</p></li>
+<li><p><strong>self.soc_min</strong> – SOC minimum (0 to 1). Can’t be discharged below.</p></li>
+<li><p><strong>self.power_min</strong> – Minimal power the car can charge or discharge.</p></li>
+<li><p><strong>self.power_max</strong> – Maximal power the car can charge or discharge.</p></li>
+<li><p><strong>self.eta_c</strong> – Charging efficiency (0 to 1).</p></li>
+<li><p><strong>self.eta_d</strong> – Discharging efficiency (0 to 1.</p></li>
+<li><p><strong>self.self_dis</strong> – Self-discharge of the battery in kW.</p></li>
+<li><p><strong>self.requested_xcapacity</strong> – The requested power of the car in kW.</p></li>
+<li><p><strong>self.xcharging_power</strong> – Power the vehicle is charging/discharging with per time step.</p></li>
+<li><p><strong>self.soc</strong> – SOC of the vehicle.</p></li>
+<li><p><strong>self.soc_target</strong> – SOC target to be fullfilled while parking time if possible.</p></li>
 </ul>
 </dd>
 </dl>

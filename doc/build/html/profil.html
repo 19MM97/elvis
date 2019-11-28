@@ -83,7 +83,6 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">DAI copy_trysphinx</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="chargingpoint.html">chargingpoint module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="control.html">control module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html">data module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="events.html">events module</a></li>
@@ -168,61 +167,39 @@
 <p>&#64;author: draz</p>
 <dl class="class">
 <dt id="profil.SimulationModel">
-<em class="property">class </em><code class="sig-prename descclassname">profil.</code><code class="sig-name descname">SimulationModel</code><span class="sig-paren">(</span><em class="sig-param">assumptions</em>, <em class="sig-param">number_of_lp</em>, <em class="sig-param">power_nominal</em>, <em class="sig-param">dis_ev_arr</em>, <em class="sig-param">dis_year</em>, <em class="sig-param">control</em>, <em class="sig-param">storage_capacity=None</em>, <em class="sig-param">co2_scenario=None</em>, <em class="sig-param">dis_battery_size=None</em>, <em class="sig-param">dis_soc=None</em>, <em class="sig-param">dis_user_type=None</em>, <em class="sig-param">trafo_preload=None</em><span class="sig-paren">)</span><a class="headerlink" href="#profil.SimulationModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">profil.</code><code class="sig-name descname">SimulationModel</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#profil.SimulationModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Simulation instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>assumptions</strong> (<em>dict</em>) – Simulation configurations.</p></li>
-<li><p><strong>number_of_lp</strong> (<em>int</em>) – Amount of charging points in the charging infrastructure.</p></li>
-<li><p><strong>power_kw</strong> (<em>float</em>) – Power of each charging point in kW.</p></li>
-<li><p><strong>dis_ev_arr</strong> (<em>list</em>) – Hourly arrival distribution for one week. Values from 0 to 1, where 1 means          arrivals and 0 no arrivals.</p></li>
-<li><p><strong>dis_year</strong> – Total amount of car arrivals within simulation time.</p></li>
-<li><p><strong>dis_year</strong> – int</p></li>
-<li><p><strong>control</strong> (<em>str</em>) – Control Strategy (‘UC’, ‘FD’, ‘FCFS’, ‘WS’, ‘OPT’) as per assumptions.</p></li>
-<li><p><strong>storage_capacity</strong> (<em>float</em>) – Capacity of the storage (in kW).</p></li>
-<li><p><strong>co2_scenario</strong> (<em>int</em>) – Position of the CO2_Scenario in the scenario list in assumptions.</p></li>
-<li><p><strong>dis_battery_size</strong> (<em>list</em>) – Distribution of the battery sizes accorting to the input file.</p></li>
-<li><p><strong>dis_soc</strong> (<em>list</em>) – Distribution of the SOCs at the arrival time of the vehicles according to the input file.</p></li>
-<li><p><strong>dis_user_type</strong> (<em>list</em>) – Distribution of the user types specified in the input file. Each user type is having a         minimal and maximal parking time.</p></li>
-<li><p><strong>trafo_preload</strong> (<em>float</em>) – Preload of the transformer the charging infrastructure is connected to.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>data</strong> – Data model from <code class="xref py py-class docutils literal notranslate"><span class="pre">Daten</span></code>.</p>
 </dd>
 <dt class="field-even">Variables</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>number_of_lp</strong> – Number of charging points for the simulation.</p></li>
-<li><p><strong>power_nominal</strong> – Nominal power of the charging points.</p></li>
-<li><p><strong>type_lp</strong> – AC or DC charging for the charging points.</p></li>
-<li><p><a class="reference internal" href="control.html#module-control" title="control"><strong>control</strong></a> – Control Strategy (‘UC’, ‘FD’, ‘FCFS’, ‘WS’, ‘OPT’) as per assumptions.</p></li>
-<li><p><strong>dis_ev_arr</strong> – Distribution of the vehicle arrivals.</p></li>
-<li><p><strong>dis_year</strong> – Total amount of car arrivals over simulation time.</p></li>
-<li><p><strong>dis_battery_size</strong> – Distribution of the battery capacitites.</p></li>
-<li><p><strong>dis_soc</strong> – Distribtion of the SOC at arrival time.</p></li>
-<li><p><strong>dis_user_type</strong> – Distribution of the user types (parking time).</p></li>
-<li><p><strong>simulation_time</strong> – Total amount of time steps.</p></li>
-<li><p><strong>trafo_preload</strong> – Time series data of the transformer pre-load.</p></li>
-<li><p><strong>co2_emission</strong> – Time series data of the CO2 emissions.</p></li>
-<li><p><strong>energy_price</strong> – Time series data of the energy price.</p></li>
-<li><p><strong>assumptions</strong> – The assumptions specified in <a class="reference internal" href="main.html#module-main" title="main"><code class="xref py py-class docutils literal notranslate"><span class="pre">main</span></code></a>.</p></li>
-<li><p><strong>connected_evs</strong> – Time series data with the amount of connected vehicles for every time step.</p></li>
-<li><p><strong>arrivals</strong> – List of all times a car arrives.</p></li>
-<li><p><strong>tau</strong> – Length of a time step in minutes.</p></li>
-<li><p><strong>charging_points</strong> – List containing all chargin points as instances of <a class="reference internal" href="chargingpoint.html#module-chargingpoint" title="chargingpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">chargingpoint</span></code></a>.</p></li>
-<li><p><strong>vehicles</strong> – Dictionary containing all connected ev IDs with their instance of <a class="reference internal" href="vehicle.html#module-vehicle" title="vehicle"><code class="xref py py-class docutils literal notranslate"><span class="pre">vehicle</span></code></a>.</p></li>
-<li><p><strong>storage_capacity</strong> – Capacity of the battery of the station in kWh.</p></li>
-<li><p><a class="reference internal" href="storage.html#module-storage" title="storage"><strong>storage</strong></a> – Instance of <a class="reference internal" href="storage.html#module-storage" title="storage"><code class="xref py py-class docutils literal notranslate"><span class="pre">storage</span></code></a>.</p></li>
-<li><p><strong>served_ev</strong> – Counter of all vehicles connected and charged.</p></li>
+<li><p><strong>self.number_of_lp</strong> – Number of charging points for the simulation.</p></li>
+<li><p><strong>self.power_nominal</strong> – Nominal power of the charging points.</p></li>
+<li><p><strong>self.type_lp</strong> – AC or DC charging for the charging points.</p></li>
+<li><p><strong>self.connected_evs</strong> – Time series data with the amount of connected vehicles for every time step.</p></li>
+<li><p><strong>self.arrivals</strong> – List of all times a car arrives.</p></li>
+<li><p><strong>self.tau</strong> – Length of a time step in minutes.</p></li>
+<li><p><strong>self.charging_points</strong> – List containing all charging points as instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">chargingpoint</span></code>.</p></li>
+<li><p><strong>self.vehicles</strong> – Dictionary containing all connected ev IDs with their instance of <a class="reference internal" href="vehicle.html#module-vehicle" title="vehicle"><code class="xref py py-class docutils literal notranslate"><span class="pre">vehicle</span></code></a>.</p></li>
+<li><p><strong>self.storage_capacity</strong> – Capacity of the battery of the station in kWh.</p></li>
+<li><p><strong>self.storage</strong> – Instance of <a class="reference internal" href="storage.html#module-storage" title="storage"><code class="xref py py-class docutils literal notranslate"><span class="pre">storage</span></code></a>.</p></li>
+<li><p><strong>self.served_ev</strong> – Counter of all vehicles connected and charged.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="method">
 <dt id="profil.SimulationModel.profile_ev_load">
-<code class="sig-name descname">profile_ev_load</code><span class="sig-paren">(</span><em class="sig-param">fix_key</em><span class="sig-paren">)</span><a class="headerlink" href="#profil.SimulationModel.profile_ev_load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile_ev_load</code><span class="sig-paren">(</span><em class="sig-param">fix_key</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#profil.SimulationModel.profile_ev_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate charging points, and arrivals. Assign power to each charging point based on control strategy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>fix_key</strong> (<em>int</em>) – 1 fixes the assumptions. 0 generates new assumptions every simulation.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – Data model from class :class:</p></li>
+<li><p><strong>fix_key</strong> (<em>int</em>) – 1 fixes the assumptions. 0 generates new assumptions every simulation.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
