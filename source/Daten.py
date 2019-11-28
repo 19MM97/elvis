@@ -5,6 +5,7 @@ import data
 
 class DataClass:
     """
+    Data model containing data from user inputs and simulation parameter.
 
     :cvar self.car_amount: Amount of cars arrinving per week in the simulation instance.
     :type self.amount: int
@@ -18,6 +19,20 @@ class DataClass:
     :type self.co2_scenario: int
     :cvar self.co2_scenario: Storage capacity in kWh considered in the simulation instance.
     :type self.co2_scenario: float
+    :cvar self.storage_capacity: Capacity of the battery from the charging infrastructure.
+    :type self.storage_capacity: float
+    :cvar self.total_simulation_time: Amount of time steps in the simulation.
+    :type self.total_simulation_time: int
+    :cvar self.dis_ev_arr: Distribution of the vehicle arrival as per input file.
+    :type self.dis_ev_arr: list
+    :cvar self.dis_year: Total amount of car arrivals over simulation time.
+    :type self.dis_year: int
+    :cvar self.dis_soc: Distribution of the SOC at arrival times of the vehicles.
+    :type self.dis_soc: list
+    :cvar self.dis_battery_size: Distribution of the battery sizes for the vehicles.
+    :type self.dis_battery_size: list
+    :cvar self.dis_user_type: Distribution of the user types resulting in different pariking times.
+    :type self.dis_user_type: list
     """
     def __init__(self):
         # User input
@@ -50,6 +65,9 @@ class DataClass:
         self.transformer_preload = None
 
     def get_time_series_data(self):
+        """
+        Read time series data from input files.
+        """
         self.co2_emission = data.get_co2_emission(self.total_simulation_time)[self.co2_scenario]
         self.energy_price = data.get_energy_price(self.total_simulation_time)
         self.transformer_preload = data.preload(self.total_simulation_time)
