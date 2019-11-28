@@ -18,9 +18,10 @@ def get_plots(path, kpis):
     """
     kpis = [kpi.replace('_OPT', '') for kpi in kpis]
     stats_list = []
-    for f in os.listdir(path):
+
+    for f in os.listdir(path + 'indicators/'):
         if 'indicators' in f and 'res_' not in f:
-            stats = pd.read_csv('%s/%s' % (path, f), index_col=0)
+            stats = pd.read_csv('%s/%s' % (path + 'indicators/', f), index_col=0)
             stats = stats.T
             stats.columns = stats.columns.str.replace('_FD', '')
             stats.columns = stats.columns.str.replace('_FCFS', '')
@@ -49,5 +50,5 @@ def get_plots(path, kpis):
                                    'Optimized'],
                         col='amount', row='evs', kind='bar', margin_titles=True, height=6, aspect=1)
 
-        plt.savefig(path + r'%s.png' % kpi)
+        plt.savefig(path + '/plots/' + r'%s.png' % kpi)
         plt.close('all')

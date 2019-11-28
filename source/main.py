@@ -67,12 +67,14 @@ def profile_ev_load(fix_key, assumptions, data):
     indicators.update(indicators_temp)
 
     path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../results/')
-    output_name = path + 'res_%s_%s_%s_%s_%s_%s.csv' % (data.car_amount, data.power_cp, data.amount_cp, data.control,
-                                                        data.co2_scenario, data.storage_capacity)
+    output_name = path + 'time_series_data/' + 'res_%s_%s_%s_%s_%s_%s.csv' % \
+                  (data.car_amount, data.power_cp, data.amount_cp, data.control, data.co2_scenario,
+                   data.storage_capacity)
     total_load.to_csv(output_name)
 
-    output_name = path + 'indicators_%s_%s_%s_%s_%s_%s.csv' % (data.car_amount, data.power_cp, data.amount_cp,
-                                                               data.control, data.co2_scenario, data.storage_capacity)
+    output_name = path + 'indicators/' + 'indicators_%s_%s_%s_%s_%s_%s.csv' % \
+                         (data.car_amount, data.power_cp, data.amount_cp, data.control,
+                          data.co2_scenario, data.storage_capacity)
     pd.DataFrame.from_dict(indicators, orient='index').to_csv(output_name)
 
     return total_load, indicators, load_profile
@@ -143,8 +145,8 @@ def main():
         kpi_s_df[c] = list(kpi_s[control].values())
         control += 1
 
-    kpi_s_df.to_csv('kpi_s.csv')
-    df_load_profiles.to_csv('profiles.csv')
+    kpi_s_df.to_csv(path + 'kpi_s.csv')
+    df_load_profiles.to_csv(path + 'profiles.csv')
 
     print(time.time()-start)
 
