@@ -11,6 +11,7 @@ from optx import opt_charging
 from storage import Storage
 from vehicle import Vehicle
 import numpy as np
+import time
 
 
 class SimulationModel:
@@ -36,6 +37,7 @@ class SimulationModel:
 
         self.number_of_lp = data.amount_cp
         self.power_nominal = data.power_cp
+        self.xcharging_power = self.power_nominal
         self.type_lp = 'AC'
 
         self.connected_evs = []
@@ -76,7 +78,7 @@ class SimulationModel:
                     t >= data.user_assumptions['opening_hours'][1] * 60 + t // 1440 * 1440:
                 for s in self.charging_points:
                     s.availability = 1.0
-                    s.charging_power = 0.0
+                    s.xcharging_power = 0.0
                     s.connected_ev = None
                     with ev_queue.mutex:
                         ev_queue.queue.clear()
@@ -88,7 +90,7 @@ class SimulationModel:
                                                  data.user_assumptions['opening_hours'][-1] -
                                                  data.user_assumptions['opening_hours'][0]) * 60:
                         self.charging_points[s].assign_ev(ev, t)
-                        self.charging_points[s].connected_ev.charging_power = self.charging_points[s].power_nominal
+                        self.charging_points[s].connected_ev.xcharging_power = self.charging_points[s].power_nominal
                         self.served_ev += 1
                         self.vehicles.update({ev.car_id: ev})
                         if data.control == 'OPT':
@@ -97,17 +99,21 @@ class SimulationModel:
                                                                 data.co2_emission, data.energy_price)
 
             self.connected_evs.append(len([s.availability for s in self.charging_points if s.availability == 0]))
+            connected_load = sum(
+                [s.load_profile['LP_%s' % s.station_id][t-1] for s in self.charging_points])
 
             # Assign power based on control strategy
-            charging_power: float = 0.0
+            xcharging_power: float = 0.0
             if data.control == 'UC':
-                charging_power = self.power_nominal
-            elif data.control == 'FD':
-                charging_power = discrimination_free(t, data.transformer_preload, self.connected_evs[t])
+                xcharging_power = self.power_nominal
+            elif data.control == 'DF':
+                xcharging_power = discrimination_free(t, data.transformer_preload, self.connected_evs[t],
+                                                      data.user_assumptions['preload'])
+
             elif data.control == 'WS':
-                available_from_trafo, xcharging_power = control_with_battery(t, self.power_nominal,
+                available_from_trafo, xcharging_power = control_with_battery(t, connected_load,
                                                                              data.transformer_preload,
-                                                                             self.connected_evs[t])
+                                                                             data.user_assumptions['preload'])
 
                 self.storage.xcharging_power = xcharging_power
                 self.storage.update_mode()
@@ -115,42 +121,35 @@ class SimulationModel:
                 self.storage.update_xcharge(self.tau)
 
                 if self.connected_evs[t] > 0:
-                    charging_power = (available_from_trafo - self.storage.xcharging_power) / self.connected_evs[t]
+                   xcharging_power = (available_from_trafo - self.storage.xcharging_power) / self.connected_evs[t]
                 else:
-                    charging_power = 0.0
+                   xcharging_power = 0.0
 
                 self.storage.load_profile['LP_%s' % self.storage.battery_id][t] = self.storage.xcharging_power
                 self.storage.load_profile['SOC_%s' % self.storage.battery_id][t] = self.storage.soc
 
             for s in range(len(self.charging_points)):
                 if data.control == 'FCFS':
-                    charging_load = sum([s.load_profile['LP_%s' % s.station_id][t] for s in self.charging_points])
-                    charging_power = first_come_first_served(t, charging_load, data.transformer_preload)
+                    connected_load = sum([s.xcharging_power for s in self.charging_points])
+                    xcharging_power = first_come_first_served(t, connected_load, data.transformer_preload,
+                                                              data.user_assumptions['preload'])
 
                 if self.charging_points[s].availability == 0:
-                    self.charging_points[s].connected_ev.requested_xcapacity = \
-                        self.charging_points[s].connected_ev.power_max
-                    self.charging_points[s].charging_power = self.charging_points[s].connected_ev.requested_xcapacity
-
                     if data.control == 'OPT':
-                        self.charging_points[s].charging_power = self.charging_points[s].chargingPlan[t]
+                        self.charging_points[s].xcharging_power = self.charging_points[s].chargingPlan[t]
                     else:
-                        self.charging_points[s].charging_power = charging_power
-
+                        self.charging_points[s].xcharging_power = xcharging_power
                     self.charging_points[s].check_power()
-                    self.charging_points[s].connected_ev.xcharging_power = self.charging_points[s].charging_power
+                    self.charging_points[s].connected_ev.xcharging_power = self.charging_points[s].xcharging_power
                     self.charging_points[s].connected_ev.check_power()
-                    self.charging_points[s].connected_ev.update_xcharge(tau=self.tau)
-                    self.charging_points[s].charging_power = self.charging_points[s].connected_ev.xcharging_power
-                    self.power_nominal = self.charging_points[s].charging_power
+                    self.charging_points[s].connected_ev.update_xcharge(self.tau)
+                    self.charging_points[s].xcharging_power = self.charging_points[s].connected_ev.xcharging_power
+                    self.xcharging_power = self.charging_points[s].xcharging_power
                     self.charging_points[s].load_profile['LP_%s' % self.charging_points[s].station_id][t] = \
                         self.charging_points[s].connected_ev.xcharging_power
+                    # self.charging_points[s].station_data(t)
+                    # time.sleep(0.5)
                     self.charging_points[s].occupancy['LP_%s' % self.charging_points[s].station_id][t] = 1.0
                     self.vehicles.update(
                         {self.charging_points[s].connected_ev.car_id: self.charging_points[s].connected_ev})
                     self.charging_points[s].update_availability(t)
-
-                    if self.charging_points[s].availability == 1:
-                        self.power_nominal = self.charging_points[s].power_max
-                    else:
-                        self.power_nominal = self.power_nominal

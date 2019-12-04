@@ -23,14 +23,14 @@ def get_plots(path, kpis):
         if 'indicators' in f and 'res_' not in f:
             stats = pd.read_csv('%s/%s' % (path + 'indicators/', f), index_col=0)
             stats = stats.T
-            stats.columns = stats.columns.str.replace('_FD', '')
-            stats.columns = stats.columns.str.replace('_FCFS', '')
             stats.columns = stats.columns.str.replace('_UC', '')
+            stats.columns = stats.columns.str.replace('_DF', '')
+            stats.columns = stats.columns.str.replace('_FCFS', '')
             stats.columns = stats.columns.str.replace('_WS', '')
             stats.columns = stats.columns.str.replace('_OPT', '')
             stats['evs'] = f.split('_')[1]
             stats['kW'] = f.split('_')[2]
-            stats['amount'] = f.split('_')[3]
+            stats['charging_points_nr'] = f.split('_')[3]
             stats['strategy'] = f.split('_')[4]
             stats['Batt.'] = f.split('_')[6].replace('.csv', '')
             stats.loc[stats['Batt.'] == 'None', 'Batt.'] = None
@@ -39,16 +39,17 @@ def get_plots(path, kpis):
     stats_s2 = pd.concat(stats_list, sort=False)
     stats_s2.index = range(stats_s2.shape[0])
     stats_s2.strategy = stats_s2.strategy.str.replace('UC', 'Uncontrolled')
-    stats_s2.strategy = stats_s2.strategy.str.replace('WS', 'With Battery')
+    stats_s2.strategy = stats_s2.strategy.str.replace('DF', 'Discrimination Free')
     stats_s2.strategy = stats_s2.strategy.str.replace('FCFS', 'First Come, First Served')
-    stats_s2.strategy = stats_s2.strategy.str.replace('FD', 'Discrimination Free')
+    stats_s2.strategy = stats_s2.strategy.str.replace('WS', 'With Battery')
     stats_s2.strategy = stats_s2.strategy.str.replace('OPT', 'Optimized')
 
     for kpi in kpis:
         g = sns.catplot(data=stats_s2, y=kpi, x='kW', hue='strategy',
-                        hue_order=['Uncontrolled', 'First Come, First Served', 'Discrimination Free', 'With Battery',
-                                   'Optimized'],
-                        col='amount', row='evs', kind='bar', margin_titles=True, height=6, aspect=1)
+                        hue_order=['Uncontrolled', 'Discrimination Free', 'First Come, First Served', 'With Battery',
+                                   'Optimized'
+                                   ],
+                        col='charging_points_nr', row='evs', kind='bar', margin_titles=True, height=6, aspect=1)
 
         plt.savefig(path + '/plots/' + r'%s.png' % kpi)
         plt.close('all')

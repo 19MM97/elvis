@@ -10,7 +10,7 @@ import math
 import numpy as np
 import pickle
 import queue
-from chargingpoint import ChargingPoint
+from cp import ChargingPoint
 
 
 def arr_interpol(dis_ev_arr, dis_year, simulation_time):
@@ -46,7 +46,6 @@ def arr_interpol(dis_ev_arr, dis_year, simulation_time):
         arrivals = arrivals.tolist()
         arrivals = [x + noh * 60 * W * nod for x in arrivals]
         week_arrivals = week_arrivals + arrivals
-    print(week_arrivals)
     return week_arrivals
 
 
@@ -94,7 +93,7 @@ def generate_ev(dis_ev_arr, dis_year, simulation_time, fix_key):
     :return: Arrival times and queue.
     """
     arrivals = fix_arrivals(dis_ev_arr, dis_year, simulation_time, fix_key)
-    ev_queue = queue.Queue(maxsize=5)
+    ev_queue = queue.Queue(maxsize=1)
     return arrivals, ev_queue
 
 

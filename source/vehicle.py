@@ -62,7 +62,7 @@ class Vehicle:
         self.eta_d = 1.0
         self.self_dis = 0.0000001
         self.requested_xcapacity = self.power_max
-        self.xcharging_power = 0.01
+        self.xcharging_power = 0.0000001
         if data.dis_soc is None:
             self.soc = 0.1
         else:
@@ -98,6 +98,7 @@ class Vehicle:
             self.xcharging_power = 5 * self.xcharging_power * self.soc
         else:
             self.xcharging_power = self.xcharging_power
+        return self.xcharging_power
 
     def check_power(self):
         """

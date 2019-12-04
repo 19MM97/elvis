@@ -35,12 +35,12 @@ class Storage:
         self.mode = 0
         self.battery_size = storage_capacity if storage_capacity is not None else 0.0
         self.soc_min = 0.01
-        self.power_max = self.battery_size * 0.75
+        self.power_max = self.battery_size * 0.5
         self.power_min = - self.power_max
         self.eta_c = 1.0
         self.eta_d = 1.0
-        self.self_dis = 0.0001
-        self.xcharging_power = None
+        self.self_dis = 0.0000001
+        self.xcharging_power = 0.000001
         self.soc = 0.5
         self.xcharging_time = None
         self.load_profile = {'LP_%s' % self.battery_id: [0] * simulation_time,

@@ -12,7 +12,6 @@ if __name__ == 'data':
 def input_2_profile_evl(dis_location, data):
     """
     Read the data concerning battery sizes, SOCs, user types, arrival times from input file.
-
     :param dis_location: Location of the charging infrastructure (according to input file).
     :type dis_location: str
     :param data: Data model from :class:`Daten`.
@@ -23,20 +22,19 @@ def input_2_profile_evl(dis_location, data):
     data.dis_user_type = [globals()['Ort1'][a].values.tolist() for a in globals()['Ort1'].columns]
     data.dis_soc = [globals()['SOC'][a].values.tolist() for a in globals()['SOC'].columns]
     data.dis_battery_size = [globals()['Batterysize'][a].values.tolist() for a in globals()['Batterysize'].columns]
-    data.dis_year = list([data.car_amount] * data.user_assumptions['Simulation_time_in_weeks'])
+    data.dis_year = list([data.car_amount] * data.user_assumptions['simulation_time_in_weeks'])
 
 
 def get_co2_emission(simulation_time):
     """
     Read the data concerning CO2 emissions from input file.
-
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
     :return: CO2 time series data.
     """
     co2_data = pd.concat([globals()['CO2_Emissions'][0:simulation_time // 60 + 1]], ignore_index=True)
     datetime_co2 = pd.date_range('2018-01-01', periods=len(co2_data), freq='H')
-    co2_data['Time'] = datetime_co2 
+    co2_data['Time'] = datetime_co2
     co2_data = co2_data.set_index('Time')
     co2_data = co2_data.resample('T')
     co2_data = co2_data.interpolate(method='linear')
@@ -47,14 +45,13 @@ def get_co2_emission(simulation_time):
 def get_energy_price(simulation_time):
     """
     Read the data concerning energy prices from input file.
-
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
     :return: Energy price time series data.
     """
     price_data = pd.concat([globals()['Energy_Price'][0:simulation_time // 60 + 1]], ignore_index=True)
     datetime_price = pd.date_range('2018-01-01', periods=len(price_data), freq='H')
-    price_data['Time'] = datetime_price 
+    price_data['Time'] = datetime_price
     price_data = price_data.set_index('Time')
     price_data = price_data.resample('T')
     price_data = price_data.interpolate(method='linear')
@@ -65,7 +62,6 @@ def get_energy_price(simulation_time):
 def preload(simulation_time):
     """
     Read the data concerning transformer pre-load from input file.
-
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
     :return: Transformer preload time series data.
