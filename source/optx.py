@@ -35,6 +35,7 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
     power_base = 100.0 
     energy_price_base = 0.3
     co2_emission_base = 0.5
+
     evs = [s.connected_ev for s in charging_points if s.availability == 0]
     data = [ev.__dict__ for ev in evs]
 
@@ -46,7 +47,7 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
     ev_set = [ev.car_id for ev in evs]
     ev_param = list(data[0].keys())
     grid_param = list(data[-1].keys())
-    
+
     # Model
     model = ConcreteModel()
 
@@ -63,6 +64,17 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
         setattr(model, parameter, Param(model.time, initialize={hours[hour]: data[-1][parameter][hour]
                                                                 for hour in range(len(hours))},
                                         mutable=True, doc=parameter))
+
+    soc = {}
+    for ev in model.EVs:
+        for time in model.time:
+            soc[time, ev] = data[ev_set.index(ev)]['soc']
+
+    def soc_limits_rule(model_in, i, j):
+        return 0, 1
+
+    model.soc_temp = Param(model.time, model.EVs, mutable=True, initialize=soc, default=0, rule=soc_limits_rule)
+
     def update_xcharge(model_in,i, tau):
         """
         Update the battery SOC according to the power within the time step. \
@@ -75,7 +87,8 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
         e_x_kwh = e_x_kwh / model_in.eta_c[i] if model_in.mode[i] == 1 else e_x_kwh / model_in.eta_d[i]
 
         model_in.xcharging_time[i] = abs(e_x_kwh / model_in.xcharging_power[i] * 60)
-        model_in.soc_temp[i] = (model_in.battery_size [i]* model_in.mode[i] - e_x_kwh + model_in.xcharging_power[i] * tau / 60.0) / model_in.battery_size[i]
+        model_in.soc_temp[i] = (model_in.battery_size[i] * model_in.mode[i] -
+                                e_x_kwh + model_in.xcharging_power[i] * tau / 60.0) / model_in.battery_size[i]
 
 
     def xcharge_battery(model_in,i):
@@ -83,11 +96,12 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
         Adjusting the charging/discharging capacity based on the current SOC of the vehicle.
         """
         model_in.xcharging_power[i] = aml.Expr_if(model_in.soc_temp[i] > 0.8,
-                                               - 5 * model_in.xcharging_power[i] * (model_in.soc_temp[i]
-                                                                                 - 1.0), aml.Expr_if(model_in.soc_temp[i] < 0.2, 5 *
-                                                                                                     model_in.xcharging_power[i] *
-                                                                                        model_in.soc_temp[i], model_in.xcharging_power[i]))
-    def power_bounds_rule(model_in, i):
+                                                  - 5 * model_in.xcharging_power[i] * (model_in.soc_temp[i]
+                                                  - 1.0), aml.Expr_if(model_in.soc_temp[i] < 0.2, 5 *
+                                                  model_in.xcharging_power[i] *
+                                                  model_in.soc_temp[i], model_in.xcharging_power[i]))
+
+    def power_bounds_rule(model_in, i, j):
         """
         Define power limits for each car.
 
@@ -96,13 +110,18 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
         :type i: int
         :return: Upper and lower power limits for the charging power.
         """
-        return model_in.power_min[i], model_in.xcharging_power[i]
+        return model_in.power_min[j], model_in.xcharging_power[j]
 
-    for hour in hours:
-        setattr(model, 'power_' + str(hour), Var(model.EVs, bounds=power_bounds_rule, doc='power given to an EV in kW'))
+    model.power = Var(model.time, model.EVs, bounds=power_bounds_rule)
+
+    def adjust_soc(model_in, i, j):
+        return model_in.soc_temp[i, j] == model_in.soc[j] + sum(model_in.power[time, j] for time in range(hours[0], i)) / \
+                                       60 / model_in.battery_size[j]
+
+    model.adjust_soc = Constraint(model.time, model.EVs, rule=adjust_soc)
 
     # Constraints
-    def trafo_limit_rule(model_in, j):
+    def trafo_limit_rule(model_in, i):
         """
         Limit the total charging power to the maximal transformer load for each time step.
 
@@ -111,7 +130,7 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
         :param j: int
         :return: Maximal charging power.
         """
-        return sum(getattr(model_in, 'power_' + str(j))[i] for i in model_in.EVs) <= model_in.breaker_limit[j]
+        return sum(model_in.power[i, j] for j in model_in.EVs) <= model_in.breaker_limit[i]
     
     model.trafo_limit_rule = Constraint(model.time, rule=trafo_limit_rule)
 
@@ -126,11 +145,11 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
         """
         connection_time = min(data[ev_set.index(i)]['parking_time'], len(hours) / 60 * tau)
         return sum(
-            getattr(model_in, 'power_' + str(j))[i] for j in model_in.time) / 60 / model_in.battery_size[i] + \
-               model_in.soc[i] >= aml.Expr_if(
-                   model_in.soc_target[i] <= connection_time * model_in.xcharging_power[i] / model_in.battery_size[i] +
-                   model_in.soc[i], model_in.soc_target[i], connection_time * model_in.xcharging_power[i] /
-                   model_in.battery_size[i] + model_in.soc[i])
+            model_in.power[j, i] for j in model_in.time) / 60 / model_in.battery_size[i] + \
+            model_in.soc[i] >= aml.Expr_if(model_in.soc_target[i] <= connection_time * model_in.xcharging_power[i] /
+                                           model_in.battery_size[i] + model_in.soc[i], model_in.soc_target[i],
+                                           connection_time * model_in.xcharging_power[i] /
+                                           model_in.battery_size[i] + model_in.soc[i])
 
     model.demand_rule = Constraint(model.EVs, rule=demand_rule)
 
@@ -143,24 +162,25 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
         :param model_in: Pyomo optimization model_in.
         :return: Target function.
         """
-        return w_1 * sum(
-            getattr(model_in, 'power_' + str(j))[i] * model_in.energy_price[j] for j in model_in.time for i in
-            model_in.EVs) / (
-                       power_base * energy_price_base) + (1 - w_1) * sum(
-            getattr(model_in, 'power_' + str(j))[i] * model_in.co2_emissions[j] for j in model_in.time for i in
-            model_in.EVs) / (
-                       power_base * co2_emission_base)
+        # return w_1 * sum(
+        #     model_in.power[i, j] * model_in.energy_price[i] for i in model_in.time for j in
+        #     model_in.EVs) / (power_base * energy_price_base) + (1 - w_1) * sum(
+        #     model_in.power[i, j] * model_in.co2_emissions[i] for i in model_in.time for j in model_in.EVs) / (
+        #                power_base * co2_emission_base)
 
     model.objective = Objective(rule=objective_rule, sense=minimize, doc='objective function')
 
     opt = SolverFactory('glpk')
     opt.solve(model)
 
-    day_ahead_plan = pd.DataFrame(0, index=hours, columns=ev_set + grid_param)
-    power_24 = []
+    model.soc_temp.pprint()
+    # model.power.pprint()
 
-    for hour in hours:
-        power_24.append(list(getattr(model, 'power_' + str(hour)).get_values().values()))
+    day_ahead_plan = pd.DataFrame(0, index=hours, columns=ev_set + grid_param)
+
+    power_24 = []
+    for h in range(len(hours)):
+        power_24.append(list(list(model.power.get_values().values())[p * len(hours) + h] for p in range(len(ev_set))))
     day_plan = pd.DataFrame(power_24, index=hours, columns=ev_set)
 
     day_ahead_plan.update(day_plan)
@@ -169,7 +189,7 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
     for s in charging_points:
         if s.availability == 0: 
             s.chargingPlan = day_ahead_plan[s.connected_ev.car_id]
-            # print("energy planned =", s.chargingPlan.sum() / s.connected_ev.battery_size / 60, ";", 'soc', s.connected_ev.soc)
-
+            # print("energy planned =", s.chargingPlan.sum() /
+            # s.connected_ev.battery_size / 60, ";", 'soc', s.connected_ev.soc)
 
     return charging_points

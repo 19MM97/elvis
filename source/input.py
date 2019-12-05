@@ -1,6 +1,7 @@
 import yaml
 from datetime import timedelta
 import data
+import events
 
 
 class DataClass:
@@ -68,17 +69,47 @@ class DataClass:
         """
         Read time series data from input files.
         """
-        self.co2_emission = data.get_co2_emission(self.total_simulation_time)[self.co2_scenario]
+        self.co2_emission = data.get_co2_emission(self.total_simulation_time)[0]
         self.energy_price = data.get_energy_price(self.total_simulation_time)
         self.transformer_preload = data.preload(self.total_simulation_time)
 
+    def get_defaults(self):
+        """
+        Generate default values, primarily for testing purposes.
+        """
+        # User input
+        self.user_assumptions = read_user_assumptions('default')
 
-def read_user_assumptions():
+        # Simulation parameters
+        self.power_cp = self.user_assumptions['power_in_kW'][0]
+        self.car_amount = self.user_assumptions['number_of_evs'][0]
+        self.amount_cp = self.user_assumptions['charging_points_nr'][0]
+        self.control = self.user_assumptions['control_strategies'][0]
+        self.co2_scenario = 0
+        self.storage_capacity = self.user_assumptions['storage_capacity'][0]
+
+        # Simulation variables
+        if self.user_assumptions['simulation_time_in_weeks'] is not None:
+            self.total_simulation_time = self.user_assumptions['simulation_time_in_weeks'] * 60 * 24 * 7
+        else:
+            self.total_simulation_time = int(timedelta(weeks=1).total_seconds() // 60)
+
+        # Assumed distributions
+        data.input_2_profile_evl(self.user_assumptions['arrival_distribution'], self)
+
+        # Time series data
+        self.get_time_series_data()
+
+
+def read_user_assumptions(file=''):
     """
     Read yaml file containing the data specified by the user.
 
     :return: User input data.
     :rtype: dict
     """
-    with open(r'../data/input_data.yaml', 'r') as file:
+    if file != '':
+        file = '_' + file
+
+    with open(r'../data/input_data' + file + '.yaml', 'r') as file:
         return yaml.load(file, Loader=yaml.FullLoader)

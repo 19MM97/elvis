@@ -24,15 +24,11 @@ days_per_week: 7
 simulation_time_in_weeks: 1
 preload: 1 #0 'Station41', 1 Station5_1, 2 free_trafo, 3 trafo_limit
 control_strategies:
-  - UC
-  - DF
-  - FCFS
-  - WS
   - OPT
 storage_capacity:
   - 5
 number_of_evs:
-  - 12
+  - 1
 co2_emissions:
   - Referenzszenario
 cost_weights:
