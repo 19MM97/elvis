@@ -114,11 +114,11 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
 
     model.power = Var(model.time, model.EVs, bounds=power_bounds_rule)
 
-    def adjust_soc(model_in, i, j):
-        return model_in.soc_temp[i, j] == model_in.soc[j] + sum(model_in.power[time, j] for time in range(hours[0], i)) / \
-                                       60 / model_in.battery_size[j]
-
-    model.adjust_soc = Constraint(model.time, model.EVs, rule=adjust_soc)
+    # def adjust_soc(model_in, i, j):
+    #     return model_in.soc_temp[i, j] == model_in.soc[j] + sum(model_in.power[time, j] for time in range(hours[0], i)) / \
+    #                                    60 / model_in.battery_size[j]
+    #
+    # model.adjust_soc = Constraint(model.time, model.EVs, rule=adjust_soc)
 
     # Constraints
     def trafo_limit_rule(model_in, i):
@@ -162,18 +162,18 @@ def opt_charging(t, trafo_preload, charging_points, assumptions, co2_emission, e
         :param model_in: Pyomo optimization model_in.
         :return: Target function.
         """
-        # return w_1 * sum(
-        #     model_in.power[i, j] * model_in.energy_price[i] for i in model_in.time for j in
-        #     model_in.EVs) / (power_base * energy_price_base) + (1 - w_1) * sum(
-        #     model_in.power[i, j] * model_in.co2_emissions[i] for i in model_in.time for j in model_in.EVs) / (
-        #                power_base * co2_emission_base)
+        return w_1 * sum(
+            model_in.power[i, j] * model_in.energy_price[i] for i in model_in.time for j in
+            model_in.EVs) / (power_base * energy_price_base) + (1 - w_1) * sum(
+            model_in.power[i, j] * model_in.co2_emissions[i] for i in model_in.time for j in model_in.EVs) / (
+                       power_base * co2_emission_base)
 
     model.objective = Objective(rule=objective_rule, sense=minimize, doc='objective function')
 
     opt = SolverFactory('glpk')
     opt.solve(model)
 
-    model.soc_temp.pprint()
+    # model.soc_temp.pprint()
     # model.power.pprint()
 
     day_ahead_plan = pd.DataFrame(0, index=hours, columns=ev_set + grid_param)

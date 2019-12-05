@@ -15,7 +15,6 @@ from profil import SimulationModel
 import time
 import input
 import sys
-import numpy as np
 
 
 def profile_ev_load(fix_key, assumptions, data):
@@ -68,9 +67,10 @@ def profile_ev_load(fix_key, assumptions, data):
     indicators.update(indicators_temp)
 
     path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../results/')
-    output_name = path + 'time_series_data/' + 'res_%s_%s_%s_%s_%s_%s.csv' % \
-                  (data.car_amount, data.power_cp, data.amount_cp, data.control, data.co2_scenario,
-                   data.storage_capacity)
+    output_name = path + 'time_series_data/' + 'res_%s_%s_%s_%s_%s_%s.csv' % (data.car_amount, data.power_cp,
+                                                                              data.amount_cp, data.control,
+                                                                              data.co2_scenario, data.storage_capacity)
+
     total_load.to_csv(output_name)
 
     output_name = path + 'indicators/' + 'indicators_%s_%s_%s_%s_%s_%s.csv' % \

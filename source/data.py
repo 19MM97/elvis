@@ -1,4 +1,5 @@
 import pandas as pd
+import error_handling
 
 
 if __name__ == 'data':
@@ -17,7 +18,7 @@ def input_2_profile_evl(dis_location, data):
     :param data: Data model from :class:`Daten`.
     :return: Distribution of battery sizes, SOC at arrival, user type, arrival times
     """
-
+    error_handling.check_input_file_cols(globals()['Arr_Typ1'].columns, dis_location, 'arrival distribution')
     data.dis_ev_arr = globals()['Arr_Typ1'][dis_location].tolist()
     data.dis_user_type = [globals()['Ort1'][a].values.tolist() for a in globals()['Ort1'].columns]
     data.dis_soc = [globals()['SOC'][a].values.tolist() for a in globals()['SOC'].columns]
@@ -25,14 +26,21 @@ def input_2_profile_evl(dis_location, data):
     data.dis_year = list([data.car_amount] * data.user_assumptions['simulation_time_in_weeks'])
 
 
-def get_co2_emission(simulation_time):
+def get_co2_emission(simulation_time, scenarios):
     """
     Read the data concerning CO2 emissions from input file.
     :param simulation_time: Total length of the simulation time.
     :type simulation_time: int
+    :param scenarios: CO2 scenarios form user inputs.
+    :rtype scenarios: list
     :return: CO2 time series data.
     """
     co2_data = pd.concat([globals()['CO2_Emissions'][0:simulation_time // 60 + 1]], ignore_index=True)
+
+    error_handling.check_input_file_cols(co2_data.columns, scenarios, 'CO2 scenario')
+
+    co2_data = co2_data[scenarios]
+
     datetime_co2 = pd.date_range('2018-01-01', periods=len(co2_data), freq='H')
     co2_data['Time'] = datetime_co2
     co2_data = co2_data.set_index('Time')

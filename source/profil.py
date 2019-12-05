@@ -11,7 +11,6 @@ from optx import opt_charging
 from storage import Storage
 from vehicle import Vehicle
 import numpy as np
-import time
 
 
 class SimulationModel:
@@ -121,9 +120,9 @@ class SimulationModel:
                 self.storage.update_xcharge(self.tau)
 
                 if self.connected_evs[t] > 0:
-                   xcharging_power = (available_from_trafo - self.storage.xcharging_power) / self.connected_evs[t]
+                    xcharging_power = (available_from_trafo - self.storage.xcharging_power) / self.connected_evs[t]
                 else:
-                   xcharging_power = 0.0
+                    xcharging_power = 0.0
 
                 self.storage.load_profile['LP_%s' % self.storage.battery_id][t] = self.storage.xcharging_power
                 self.storage.load_profile['SOC_%s' % self.storage.battery_id][t] = self.storage.soc

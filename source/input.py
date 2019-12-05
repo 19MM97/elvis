@@ -1,7 +1,7 @@
 import yaml
 from datetime import timedelta
 import data
-import events
+import error_handling
 
 
 class DataClass:
@@ -35,9 +35,11 @@ class DataClass:
     :cvar self.dis_user_type: Distribution of the user types resulting in different pariking times.
     :type self.dis_user_type: list
     """
+
     def __init__(self):
         # User input
         self.user_assumptions = read_user_assumptions()
+        error_handling.check_user_assumptions(self)
 
         # Simulation parameters
         self.power_cp = 0
@@ -69,7 +71,7 @@ class DataClass:
         """
         Read time series data from input files.
         """
-        self.co2_emission = data.get_co2_emission(self.total_simulation_time)[0]
+        self.co2_emission = data.get_co2_emission(self.total_simulation_time, self.user_assumptions['co2_emissions'])[0]
         self.energy_price = data.get_energy_price(self.total_simulation_time)
         self.transformer_preload = data.preload(self.total_simulation_time)
 

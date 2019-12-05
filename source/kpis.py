@@ -65,7 +65,7 @@ def get_indicators(load_profile, total_load, data):
         'CO2_Emissionen (kge)_' + data.control: round(co2_emissions, 2),
         'Energiekosten (Euro)_' + data.control: round(energy_costs, 2),
         'Kosten (Cent per kWh)_' + data.control: round(specific_energy_costs, 2),
-        'Zufriedenheit (%)_' + data.control: round(satisfaction_factor,2)
+        'Zufriedenheit (%)_' + data.control: round(satisfaction_factor, 2)
         }
 
     print('Control', data.control,  'Energy in MWh =', round(np.trapz(total_load['lp_total_load_kW']) / 60000.0, 4))
