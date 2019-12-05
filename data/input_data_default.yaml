@@ -1,0 +1,42 @@
+scenario: S2
+location: Parkhaus/Kaufhaus
+charging_points_nr:
+  - 1
+power_in_kW:
+  - 11
+arrival_distribution: AutosDiss-residential
+#AutosDiss-Tankstelle_City
+#AutosDiss-gasstation_Highway
+#AutosDiss-supermarket
+#AutosDiss-street
+#AutosDiss-residential
+#AutosDiss-Tankstelle_AutoBahn
+#AutosDiss-Autovermieter
+#AutosDiss-P+R
+#AutosDiss-Firmenparkplaetze_office
+#AutosDiss-Kunden_day
+#AutosDiss-Kunden_night
+#AutosDiss-Firmenparkplaetze_fleet
+#AutosDiss-Busdepot	AutosDiss-Taxistand
+possible_parking_time: Kurz (Normalverteilung, µ=40, σ =10)
+ev_battery_capacity_in_kWh: Market Research BEV 2017
+days_per_week: 7
+simulation_time_in_weeks: 1
+preload: 1 #0 'Station41', 1 Station5_1, 2 free_trafo, 3 trafo_limit
+control_strategies:
+  - UC
+  - DF
+  - FCFS
+  - WS
+  - OPT
+storage_capacity:
+  - 5
+number_of_evs:
+  - 12
+co2_emissions:
+  - Referenzszenario
+cost_weights:
+  - 1
+opening_hours:
+  - 7
+  - 21
