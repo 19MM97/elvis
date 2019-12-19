@@ -1,0 +1,50 @@
+T_sample = 1e-06;
+%% inverter design
+V_in = 51.8;
+%V_ac = 315;
+V_ac=400;
+m_f=100;
+f_sin = 50;
+f_carrier = m_f * f_sin;
+Gpwm = 350;
+m_a = 1/Gpwm;%/V_in;
+%V_base = 400;
+V_max = 311;
+%V_base=V_max;
+%% LCL-Filter design
+L_inv = 2.5e-03;
+L_grid = 1.5e-03;
+R_d = 3.1;
+C = 15e-06;
+L_a_inv = L_inv; 
+L_b_inv = L_inv;
+L_c_inv = L_inv;
+L_a_grid = L_grid;
+L_b_grid = L_grid;
+L_c_grid = L_grid;
+
+%% controller design
+Vcd=315;
+Vcq=10;
+w_ref = f_sin*2*pi;
+w_cr = 6283;
+w_n = 2*pi*100;
+PM = 52;
+zeta = 0.707;
+Kp = 1.165 %zeta*2*w_n/V_max;  %28.5673
+tau = Kp*V_max/(w_n^2);   % 2.2505e-04
+Ki = 2776 %8*Kp/tau;            %1.2694e+05
+Kse = 1;%1/sqrt(2);
+Idref = 40;
+Iqref = 0;
+Gps_db = 47.5;
+Gps = 10^(Gps_db/20);
+Gc = 1 / Gpwm / Gps / Kse;
+phi_boost = 90 + PM;
+K = tand(phi_boost/4+45) %take 2
+%K = tand((180-phi_boost)/4+45) % take 1
+w_z = w_cr / K
+w_p = w_cr * K
+Kc = 1/(w_z/K * Gc)
+K_cross = (L_inv) * 2*pi*f_sin
+R_Int = 1e-3
