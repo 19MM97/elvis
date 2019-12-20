@@ -19,8 +19,17 @@ def input_2_profile_evl(dis_location, data):
     """
 
     data.dis_ev_arr = globals()['Arr_Typ1'][dis_location].tolist()
-    data.dis_user_type = [globals()['Ort1'][a].values.tolist() for a in globals()['Ort1'].columns]
-    data.dis_soc = [globals()['SOC'][a].values.tolist() for a in globals()['SOC'].columns]
+
+    case_rows = globals()['Ort1']['Case'] == data.user_assumptions['arrival_distribution']
+    case = globals()['Ort1'][case_rows]
+    case.pop('Case')
+    data.dis_user_type = [case[a].values.tolist() for a in case.columns]
+
+    case_rows = globals()['SOC']['Case'] == data.user_assumptions['arrival_distribution']
+    case = globals()['SOC'][case_rows]
+    case.pop('Case')
+    data.dis_soc = [case[a].values.tolist() for a in case.columns]
+
     data.dis_battery_size = [globals()['Batterysize'][a].values.tolist() for a in globals()['Batterysize'].columns]
     data.dis_year = list([data.car_amount] * data.user_assumptions['simulation_time_in_weeks'])
 

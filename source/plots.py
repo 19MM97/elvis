@@ -45,11 +45,11 @@ def get_plots(path, kpis):
     stats_s2.strategy = stats_s2.strategy.str.replace('OPT', 'Optimized')
 
     for kpi in kpis:
-        g = sns.catplot(data=stats_s2, y=kpi, x='kW', hue='strategy',
-                        hue_order=['Uncontrolled', 'Discrimination Free', 'First Come, First Served', 'With Battery',
-                                   'Optimized'
-                                   ],
-                        col='charging_points_nr', row='evs', kind='bar', margin_titles=True, height=6, aspect=1)
+        # g = sns.catplot(data=stats_s2, y=kpi, x='kW', hue='strategy',
+        #                 hue_order=['Uncontrolled', 'Discrimination Free', 'First Come, First Served', 'With Battery',
+        #                            'Optimized'
+        #                            ],
+        #                 col='charging_points_nr', row='evs', kind='bar', margin_titles=True, height=6, aspect=1)
 
         plt.savefig(path + '/plots/' + r'%s.png' % kpi)
         plt.close('all')

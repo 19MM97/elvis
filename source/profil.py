@@ -11,7 +11,6 @@ from optx import opt_charging
 from storage import Storage
 from vehicle import Vehicle
 import numpy as np
-import time
 
 
 class SimulationModel:
@@ -96,7 +95,7 @@ class SimulationModel:
                         if data.control == 'OPT':
                             self.charging_points = opt_charging(t, data.transformer_preload, self.charging_points,
                                                                 data.user_assumptions,
-                                                                data.co2_emission, data.energy_price)
+                                                                data.co2_emission, data.energy_price, data)
 
             self.connected_evs.append(len([s.availability for s in self.charging_points if s.availability == 0]))
             connected_load = sum(
@@ -108,12 +107,12 @@ class SimulationModel:
                 xcharging_power = self.power_nominal
             elif data.control == 'DF':
                 xcharging_power = discrimination_free(t, data.transformer_preload, self.connected_evs[t],
-                                                      data.user_assumptions['preload'])
+                                                      data)
 
             elif data.control == 'WS':
                 available_from_trafo, xcharging_power = control_with_battery(t, connected_load,
                                                                              data.transformer_preload,
-                                                                             data.user_assumptions['preload'])
+                                                                             data)
 
                 self.storage.xcharging_power = xcharging_power
                 self.storage.update_mode()
@@ -132,7 +131,7 @@ class SimulationModel:
                 if data.control == 'FCFS':
                     connected_load = sum([s.xcharging_power for s in self.charging_points])
                     xcharging_power = first_come_first_served(t, connected_load, data.transformer_preload,
-                                                              data.user_assumptions['preload'])
+                                                              data)
 
                 if self.charging_points[s].availability == 0:
                     if data.control == 'OPT':

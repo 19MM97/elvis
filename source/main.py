@@ -16,6 +16,7 @@ import time
 import input
 import sys
 import numpy as np
+import yaml
 
 
 def profile_ev_load(fix_key, assumptions, data):
@@ -92,6 +93,7 @@ def main():
     load_profiles = []
     output = []
 
+    col_names = []
     for car_amount in assumptions['number_of_evs']:  # per week
         data.car_amount = car_amount
         fix_key = 1  # 1 for fixing the assumptions
@@ -109,6 +111,8 @@ def main():
                                 output = profile_ev_load(fix_key, assumptions, data)
                                 kpi_s.append(output[1])
                                 load_profiles.append((output[0]))
+                                col_names.append(data.car_amount + '_' + data.power_cp + '_' + data.amount_cp  + '_' +
+                                                 data.control + '_' + data.co2_scenario)
                                 fix_key = 0
                         else:
                             data.storage_capacity = None
@@ -116,24 +120,16 @@ def main():
                             kpi_s.append(output[1])
                             load_profiles.append(output[0])
                             fix_key = 0
+                            col_names.append(str(data.car_amount) + '_' + str(data.power_cp) + '_' + str(data.amount_cp)
+                                             + '_' + str(data.control) + '_' + str(data.co2_scenario))
 
     path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../results/')
     get_plots(path, list(output[1].keys()))
 
     kpi_s_df = pd.DataFrame(0, index=output[1].keys(),
-                            columns=['Uncontrolled',
-                                     'Discrimintation Free',
-                                     'First Come, First Served',
-                                     'With Battery',
-                                     'Cost optimized'
-                                     ])
+                            columns=col_names)
 
-    df_load_profiles = pd.DataFrame(0, index=range(1440), columns=['Uncontrolled',
-                                                                   'Discrimintation Free',
-                                                                   'First Come, First Served',
-                                                                   'With Battery',
-                                                                   'Cost optimized'
-                                                                   ])
+    df_load_profiles = pd.DataFrame(0, index=range(1440), columns=col_names)
 
     df = {}
     for df, col in zip(load_profiles, df_load_profiles.columns):
@@ -150,12 +146,45 @@ def main():
         kpi_s_df[c] = list(kpi_s[control].values())
         control += 1
 
-    kpi_s_df.to_csv(path + 'kpi_s.csv')
-    df_load_profiles.to_csv(path + 'profiles.csv')
+    kpi_s_df.to_csv(path + 'kpi_s' + data.user_assumptions['arrival_distribution'] + '.csv')
+    df_load_profiles.to_csv(path + 'profiles' + data.user_assumptions['arrival_distribution'] + '.csv')
 
     print(time.time()-start)
 
 
 if __name__ == '__main__':
     sys.path.append('./source')
-    main()
+
+    # #cp, power in kw,# cars per week, opening hours, preload, trafo_limit
+
+    cases = {'SC_Tankstelle_City': [[10, 20], [150, 350], [2500, 10000], [6, 24], 3, 6],
+             'AutosDiss-Firmenparkplaetze_fleet': [[20, 50], [3.7, 11], [400, 800], [0, 24], 2, 5],
+             'AutosDiss-Firmenparkplaetze_office': [[20, 50], [3.7, 11], [500, 1000], [8, 18], 2, 5],
+             'SC_Kundenparkplätze_Day': [[20, 50], [3.7, 11], [500, 1000], [8, 22], 2, 5],
+             'SC_Kundenparkplätze_night': [[20, 50], [3.7, 11], [500, 1000], [0, 24], 2, 5],
+             'SC_P&R': [[10, 30], [3.7, 11], [500], [6, 20], 2, 5],
+             'SC_Straßenrand': [[10, 30], [3.7, 11], [500, 1000], [0, 24], 2, 5],
+             'SC_Tankstelle_Autobahn': [[20, 30], [150, 350], [1000, 5000], [8, 22], 3, 6],
+
+             'SC_Taxistand': [[2, 3], [50], [150, 250], [8, 22], 2, 5],
+             'SC_Wohnblocks': [[10, 50], [3.7, 11], [500, 1000], [0, 24], 2, 5]
+             }
+
+    for i in cases.keys():
+        with open(r'../data/input_data.yaml', 'r') as file:
+            assumptions = yaml.load(file, Loader=yaml.FullLoader)
+
+        assumptions['charging_points_nr'] = cases[i][0]
+        assumptions['power_in_kW'] = cases[i][1]
+        assumptions['arrival_distribution'] = i
+        assumptions['number_of_evs'] = cases[i][2]
+        assumptions['opening_hours'] = cases[i][3]
+        assumptions['preload'] = cases[i][4]
+        assumptions['trafo_limit'] = cases[i][5]
+
+        with open(r'../data/input_data.yaml', 'w') as file:
+            doc = yaml.dump(assumptions, file)
+
+        main()
+
+
